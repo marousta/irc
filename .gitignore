@@ -1,0 +1,7 @@
+*.o
+*.swp
+example/
+obj/
+.vscode/
+a.out
+ircserv
