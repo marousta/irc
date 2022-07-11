@@ -50,7 +50,7 @@ Client TCPSocket::accept() const
 
 	TCPSocket socket(::accept(this->_fd, &addr, &addrlen));
 
-	return Client(socket, addr, addrlen);
+	return Client(socket, IPAddress((struct sockaddr_in *)&addr));
 }
 
 TCPSocketBuilder::TCPSocketBuilder()

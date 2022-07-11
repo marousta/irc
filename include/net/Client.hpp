@@ -1,23 +1,24 @@
 #pragma once
 
 #include "TCPSocket.hpp"
+#include "IPAddress.hpp"
 
 namespace ft {
 
 class Client {
 	private:
-		TCPSocket _socket;
-		struct sockaddr _address;
-		socklen_t _addrlen;
+		TCPSocket 	_socket;
+		IPAddress 	_address;
 
 	public:
 		Client();
 		Client(const Client& other);
-		Client(TCPSocket socket, struct sockaddr address, socklen_t addrlen);
+		Client(TCPSocket socket, IPAddress address);
 		~Client();
 		Client& operator=(const Client& other);
 
 		bool is_valid() const;
+		const IPAddress& address() const;
 };
 
 }

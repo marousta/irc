@@ -25,7 +25,7 @@ int main()
 			client = server.socket().accept();
 			if (client.is_valid()) {
 				clients.push_back(client);
-				std::cout << "Client connected" << std::endl;
+				std::cout << "Client connected with address " << client.address().as_string() << std::endl;
 			}
 		} while (client.is_valid());
 	}
