@@ -26,6 +26,7 @@ void TCPSocket::close()
 	if (this->is_valid()) {
 		::close(this->_fd);
 	}
+	this->_fd = -1;
 }
 
 TCPSocket& TCPSocket::operator=(const TCPSocket& other)
