@@ -31,6 +31,11 @@ bool Client::is_valid() const
 	return this->_socket.is_valid();
 }
 
+TCPSocket	&Client::socket()
+{
+	return this->_socket;
+}
+
 const IPAddress& Client::address() const
 {
 	return this->_address;

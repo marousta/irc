@@ -4,6 +4,7 @@
 #include "Client.hpp"
 #include <map>
 #include <string>
+#include <vector>
 
 namespace ft {
 
@@ -11,8 +12,7 @@ class Server {
 	private:
 		TCPSocket _socket;
 
-		// Map of vectors because multiple users might be on the same IP Address
-		std::map<std::string, Client> _clients;
+		std::vector<Client *> _clients;
 
 	public:
 		Server();
@@ -23,6 +23,8 @@ class Server {
 		TCPSocket socket();
 
 		void close();
+		void handle_new_connections();
+		void poll();
 };
 
 }

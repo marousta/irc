@@ -109,4 +109,9 @@ TCPSocket TCPSocketBuilder::build() const
 	return TCPSocket(fd);
 }
 
+int TCPSocket::raw()
+{
+	return this->_fd;
+}
+
 }

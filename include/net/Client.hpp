@@ -18,6 +18,7 @@ class Client {
 		Client& operator=(const Client& other);
 
 		bool is_valid() const;
+		TCPSocket	&socket();
 		const IPAddress& address() const;
 };
 

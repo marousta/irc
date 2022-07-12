@@ -21,6 +21,7 @@ class TCPSocket {
 		TCPSocket& operator=(const TCPSocket& other);
 
 		bool is_valid() const;
+		int raw();
 
 		Client accept() const;
 

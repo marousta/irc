@@ -17,17 +17,11 @@ int main()
 
 	ft::Server server(server_socket);
 
-	std::vector<ft::Client> clients;
+	std::vector<ft::Client *> clients;
 
 	for (;;) {
-		ft::Client client;
-		do {
-			client = server.socket().accept();
-			if (client.is_valid()) {
-				clients.push_back(client);
-				std::cout << "Client connected with address " << client.address().as_string() << std::endl;
-			}
-		} while (client.is_valid());
+		server.handle_new_connections();
+		server.poll();
 	}
 
 	server.close();
