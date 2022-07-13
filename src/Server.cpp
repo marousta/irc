@@ -1,9 +1,11 @@
 #include <fcntl.h>
-#include <string>
-#include <iostream>
 #include <poll.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+#include <errno.h>
+#include <string>
+#include <cstring>
+#include <iostream>
 #include "Server.hpp"
 
 namespace ft {

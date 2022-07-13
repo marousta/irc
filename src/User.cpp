@@ -56,12 +56,12 @@ void User::append_to_message(const std::string& chunk)
 	this->_message += chunk;
 	if (this->is_message_complete()) {
 		// Removing the '\n'
-		this->_message.pop_back();
+		this->_message.erase(this->_message.size() - 1, 1);
 
 		// The RFC states that every command is delimited by a CRLF (\r\n). Our reference client does not follow this rule
 		// To support the RFC, we check if there is a carriage return before the newline, and we remove it
 		if (!this->_message.empty() && this->_message[this->_message.size() - 1] == '\r') {
-			this->_message.pop_back();
+			this->_message.erase(this->_message.size() - 1, 1);
 		}
 		this->process_message();
 		this->_message = "";
