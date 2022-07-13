@@ -92,7 +92,11 @@ void Server::poll()
 			for (;;)
 			{
 				std::memset(buf, 0, sizeof(buf));
+<<<<<<< HEAD
 				ssize_t stat = ::recv(pool[i].fd, buf, 1024, 0);
+=======
+				ssize_t stat = ::recv(pool[i].fd, buf, 1023, 0);
+>>>>>>> 57891bef39aa819f4c7572bcd7764df9cd2c3666
 				if (stat == 0)
 				{
 					break;
