@@ -55,12 +55,11 @@ Server::~Server()
 
 void Server::poll()
 {
-	if (this->_pollfds.empty()) {
-		usleep(30000);
-	}
-
-	if (::poll(&this->_pollfds[0], this->_pollfds.size(), 30) < 0) {
+	int poll_ret = ::poll(&this->_pollfds[0], this->_pollfds.size(), 30);
+	if (poll_ret < 0) {
 		throw std::string("Could not poll on socket: ") + ::strerror(errno);
+	} else if (poll_ret == 0) {
+		usleep(30000);
 	}
 
 	struct sockaddr_in addr;
@@ -89,10 +88,12 @@ void Server::poll()
 					size_t len = pos - (char*)buf;
 					std::memset(buf, 0, 1023);
 					n = recv(pfd.fd, buf, len + 1, 0);
+				} else {
+					n = recv(pfd.fd, buf, 1023, 0);
 				}
 				user->append_to_message(buf);
 			} else {
-				std::cout << user->host() << ":" << user->port() << " has lost connection (no response)" << std::endl;
+				std::cout << user->host() << ":" << user->port() << " has lost connection (timeout)" << std::endl;
 				this->disconnect(i);
 			}
 		}
