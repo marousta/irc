@@ -53,8 +53,6 @@ Server::~Server()
 	::close(this->_socket);
 }
 
-#include <stdio.h>
-
 void Server::poll()
 {
 	int poll_ret = ::poll(&this->_pollfds[0], this->_pollfds.size(), 30);
