@@ -53,13 +53,13 @@ Server::~Server()
 	::close(this->_socket);
 }
 
+#include <stdio.h>
+
 void Server::poll()
 {
 	int poll_ret = ::poll(&this->_pollfds[0], this->_pollfds.size(), 30);
 	if (poll_ret < 0) {
 		throw std::string("Could not poll on socket: ") + ::strerror(errno);
-	} else if (poll_ret == 0) {
-		usleep(30000);
 	}
 
 	struct sockaddr_in addr;
@@ -83,7 +83,7 @@ void Server::poll()
 		if (pfd.revents & POLLIN) {
 			std::memset(buf, 0, 1023);
 			int n = recv(pfd.fd, buf, 1023, MSG_PEEK);
-			if (n >= 0) {
+			if (n > 0) {
 				if (char *pos = std::strstr(buf, "\n")) {
 					size_t len = pos - (char*)buf;
 					std::memset(buf, 0, 1023);
