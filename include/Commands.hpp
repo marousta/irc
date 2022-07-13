@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "net/Server.hpp"
+#include "Server.hpp"
 #include "Replies.hpp"
 #include "Errors.hpp"
 #include "Helpers.hpp"
