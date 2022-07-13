@@ -95,6 +95,9 @@ void Server::poll()
 			} else {
 				std::cout << user->host() << ":" << user->port() << " has lost connection (timeout)" << std::endl;
 				this->disconnect(i);
+				if (i-- == 0) {
+					break ;
+				}
 			}
 		}
 		if (pfd.revents & POLLHUP) {
