@@ -53,6 +53,10 @@ Server::~Server()
 
 void Server::poll()
 {
+	if (this->_pollfds.empty()) {
+		usleep(30000);
+	}
+
 	if (::poll(&this->_pollfds[0], this->_pollfds.size(), 30) < 0) {
 		throw std::string("Could not poll on socket: ") + ::strerror(errno);
 	}
@@ -85,10 +89,13 @@ void Server::poll()
 					n = recv(pfd.fd, buf, len + 1, 0);
 				}
 				user->append_to_message(buf);
+			} else {
+				std::cout << user->host() << ":" << user->port() << " has lost connection (no response)" << std::endl;
+				this->disconnect(i);
 			}
 		}
 		if (pfd.revents & POLLHUP) {
-			std::cout << user->host() << ":" << user->port() << " has lost connection" << std::endl;
+			std::cout << user->host() << ":" << user->port() << " has lost connection (connection closed)" << std::endl;
 			this->disconnect(i);
 		}
 	}
