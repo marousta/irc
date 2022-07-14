@@ -158,9 +158,9 @@ void Server::process_message(User& sender, const std::string& message)
 	}
 }
 
-uint64_t	 Server::find_user_index(const User& user)
+size_t	 Server::find_user_index(const User& user)
 {
-	for (uint64_t i = 0; i < this->_users.size(); ++i) {
+	for (size_t i = 0; i < this->_users.size(); ++i) {
 		if (this->_users[i]->socket() == user.socket()) {
 			return i;
 		}
@@ -232,6 +232,17 @@ void Server::parse_message(const std::string& message, std::string& command, std
 
 	for (size_t i = 0; i < params.size(); ++i) {
 		std::cout << params[i] << std::endl;
+	}
+}
+
+void	Server::create_channel(User *creator, const std::vector<std::string> &args) /* TODO: make it cleaner */
+{
+	if (args.size() == 1) {
+		this->_channels[args[0]] = new Channel(creator, args[0]);
+	} else if (args.size() == 2) {
+		this->_channels[args[0]] = new Channel(creator, args[0], args[1]);
+	} else {
+		throw; /* TODO: error invalid number of args */
 	}
 }
 
