@@ -1,0 +1,64 @@
+### connection
+
+Client  CAP request
+Server  CAP ignored
+Client  PASS request		[:<password>]
+Client  NICK request		[<nick>]
+CLient  USER request		[<nick> <mode> <unused> :<username>]
+Server  respond 001 002 003 004 005 005 251 254 (255) 265 (266 250) <(375 372 376) optional MOTD>
+Client  JOIN request		[<channel name>]
+Server  respond JOIN 353 366
+Client  WHO request			[<nick>]
+Server  respond 352 315
+?? Client  USERHOST request	[<nick>]
+?? Server  respond 302
+Client  MODE request		[<channel name>]
+Server  respond 324 329
+Client  MODE request		[<channel name> +b]> list banned user
+Server  respond 368
+
+Client PING every Ns and Server respond with PONG, PONG timeout configurable
+Client request WHO every Ns and Server respond with 352 315
+
+001 RPL_WELCOME						:<servername> <code> <nick> :Welcome to the Internet Relay Network <username>!~<nick>@localhost
+002 RPL_YOURHOST					:<servername> <code> <nick> :Your host is <servername>, running version <server version>
+003 RPL_CREATED						:<servername> <code> <nick> :This server has been started <date>
+004 RPL_MYINFO						:<servername> <code> <nick> <servername> <server version> abBcCFiIoqrRswx abehiIklmMnoOPqQrRstvVz
+005 RPL_BOUNCE						:<servername> <code> <nick> RFC2812 IRCD=<server> CHARSET=UTF-8 CASEMAPPING=ascii PREFIX=(qaohv)~&@%+ CHANTYPES=#&+ CHANMODES=beI,k,l,imMnOPQRstVz CHANLIMIT=#&+:10 CHANNELLEN=50 NICKLEN=9 TOPICLEN=490 AWAYLEN=127 KICKLEN=400 MODES=5 MAXLIST=beI:50 EXCEPTS=e INVEX=I PENALTY FNC :are supported on this server
+251 RPL_LUSERCLIENT					:<servername> <code> <nick> :There are 1 users and 0 services on 1 servers
+254 RPL_LUSERCHANNELS				:<servername> <code> <nick> 1 :channels formed
+?? 255 RPL_LUSERME						:<servername> <code> <nick> :I have 1 users, 0 services and 0 servers
+265 RPL_LOCALUSERS                  :<servername> <code> <nick> 1 1 :Current local users: 1, Max: 1
+?? 266 RPL_GLOBALUSERS 				:<servername> <code> <nick> 1 1 :Current global users: 1, Max: 1
+?? 250 ??? RPL_HCONNECTIONCOUNT		:<servername> <code> <nick> :Highest connection count: 1 (2 connections received)
+?? 375 RPL_MOTDSTART					:<servername> <code> <nick> :- <servername> message of the day
+?? 372 RPL_MOTD						:<servername> <code> <nick> :- <MOTD>
+?? 376 RPL_ENDOFMOTD					:<servername> <code> <nick> :End of MOTD command
+353 RPL_NAMREPLY					:<servername> <code> <nick> = <channel name> :<list of user>
+366 RPL_ENDOFNAMES					:<servername> <code> <nick> <channel name> :End of NAMES list
+?? 302 RPL_USERHOST					:<servername> <code> <nick> :<username>=+~<nick>@localhost
+324 RPL_CHANNELMODEIS				:<servername> <code> <nick> <channel name> +
+329 RPL_CREATIONTIME                :<servername> <code> <nick> <channel name> 1 657 645 721
+368 RPL_ENDOFBANLIST				:<servername> <code> <nick> <channel name> :End of channel ban list
+JOIN								:<username>!~<nick>@localhost JOIN :<channel name>
+
+352 RPL_WHOREPLY					:<servername> <code> <nick> * ~<nick> localhost <servername> <nick> H :0 <username>
+315 RPL_ENDOFWHO					:<servername> <code> <nick> <nick> :End of WHO list
+PONG								:<servername> PONG <servername> :LAG190857 ???
+
+### private message
+
+Client  PRIVMSG request [<nickname> <message>]
+Server  respond PRIVMSG
+
+non existing nick:
+Client  PRIVMSG request [<nickname> <message>]
+Server  respond 401
+
+empty message:
+Client  PRIVMSG request [<nickname>]
+Server  respond 412
+
+401	ERR_NOSUCHNICK					:<servername> <code> <nick> <to nick> :No such nick or channel name
+412	ERR_NOTEXTTOSEND				:<servername> <code> <nick> :No text to send
+PRIVMSG								:<username>!~<nick>@localhost PRIVMSG <to nick> :<message>
