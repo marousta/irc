@@ -1,12 +1,9 @@
 #include <fcntl.h>
 #include <poll.h>
 #include <unistd.h>
-#include <arpa/inet.h>
 #include <errno.h>
 #include <sstream>
-#include <string>
 #include <cstring>
-#include <iostream>
 #include <algorithm>
 
 #include "Server.hpp"
@@ -161,9 +158,9 @@ void Server::process_message(User& sender, const std::string& message)
 	}
 }
 
-int	 Server::find_user_index(const User& user)
+uint64_t	 Server::find_user_index(const User& user)
 {
-	for (int i = 0; i < this->_users.size(); ++i) {
+	for (uint64_t i = 0; i < this->_users.size(); ++i) {
 		if (this->_users[i]->socket() == user.socket()) {
 			return i;
 		}
@@ -173,7 +170,7 @@ int	 Server::find_user_index(const User& user)
 
 void Server::parse_message(const std::string& message, std::string& command, std::vector<std::string>& params)
 {
-	const char *str = &message[0];
+	const char *str = &message[0]; /* TODO: unused */
 	command.clear();
 	params.clear();
 

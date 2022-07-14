@@ -1,8 +1,9 @@
+#include <vector>
+#include <iostream>
+
 #include "Commands.hpp"
 #include "Server.hpp"
 #include "User.hpp"
-#include <vector>
-#include <iostream>
 
 namespace ft {
 namespace cmd {

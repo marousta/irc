@@ -1,7 +1,7 @@
+#include <unistd.h>
+
 #include "Server.hpp"
 #include "User.hpp"
-#include <iostream>
-#include <unistd.h>
 
 namespace ft {
 

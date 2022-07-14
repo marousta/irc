@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <vector>
 
 #include "Replies.hpp"
 #include "Errors.hpp"

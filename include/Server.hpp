@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <vector>
 #include <map>
 #include <arpa/inet.h>
@@ -24,7 +25,7 @@ class Server {
 		void disconnect(size_t user_index);
 
 		void process_message(User& sender, const std::string& message);
-		int	 find_user_index(const User& user);
+		uint64_t find_user_index(const User& user);
 
 	private:
 		void parse_message(const std::string& message, std::string& command, std::vector<std::string>& params);
