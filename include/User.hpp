@@ -4,6 +4,8 @@
 
 namespace ft {
 
+class Server;
+
 class User {
 	private:
 		bool		_did_enter;
@@ -15,8 +17,9 @@ class User {
 		std::string	_username;
 		std::string	_realname;
 		std::string	_message;
+		Server		*_server;
 	public:
-		User(int socket, const std::string& host, int port);
+		User(int socket, const std::string& host, int port, Server *server);
 
 		User(const User& other);
 
@@ -25,6 +28,7 @@ class User {
 		User& operator=(const User& other);
 
 		int port() const;
+		int socket() const;
 
 		const std::string& host() const;
 		const std::string& nick() const;

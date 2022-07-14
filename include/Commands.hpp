@@ -2,22 +2,22 @@
 
 #include <iostream>
 
-#include "Server.hpp"
 #include "Replies.hpp"
 #include "Errors.hpp"
 #include "Helpers.hpp"
 
 #define CLASS_COMMAND(name) \
-class name : public Command {								\
-	public:													\
-		name(ft::Server& serv);								\
-															\
-		void	execute(std::vector<std::string> args);		\
+class name : public Command {													\
+	public:																		\
+		name(ft::Server& serv);													\
+																				\
+		void	execute(User *sender, const std::vector<std::string>& args);	\
 };
 
-
 namespace ft {
-namespace cmd {
+
+class Server;
+class User;
 
 class Command {
 	protected:
@@ -27,10 +27,12 @@ class Command {
 
 	public:
 		Command(ft::Server& serv, std::string name, std::string desc);
-		~Command();
+		virtual ~Command();
 
-		virtual void	execute(std::vector<std::string> args) = 0;
+		virtual void	execute(User *sender, const std::vector<std::string>& args) = 0;
 };
+
+namespace cmd {
 
 CLASS_COMMAND(Help);
 CLASS_COMMAND(Join);

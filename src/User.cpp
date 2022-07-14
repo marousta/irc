@@ -1,12 +1,13 @@
+#include "Server.hpp"
 #include "User.hpp"
 #include <iostream>
 #include <unistd.h>
 
 namespace ft {
 
-User::User(int socket, const std::string& host, int port)
+User::User(int socket, const std::string& host, int port, Server *server)
 	:	_did_enter(false), _did_register(false), _socket(socket), _port(port),
-		_host(host), _nick(""), _username(""), _realname(""), _message("")
+		_host(host), _nick(""), _username(""), _realname(""), _message(""), _server(server)
 {	}
 
 User::User(const User& other)
@@ -27,6 +28,7 @@ User& User::operator=(const User& other)
 	this->_username = other._username;
 	this->_realname = other._realname;
 	this->_message = other._message;
+	this->_server = other._server;
 
 	return *this;
 }
@@ -64,7 +66,6 @@ void User::append_to_message(const std::string& chunk)
 			this->_message.erase(this->_message.size() - 1, 1);
 		}
 		this->process_message();
-		this->_message = "";
 	}
 }
 
@@ -73,7 +74,13 @@ void User::process_message()
 	if (this->_message.empty()) {
 		return ;
 	}
-	std::cout << "[" << this->host() << ":" << this->port() << "] " << this->_message << std::endl;
+	this->_server->process_message(*this, this->_message);
+	this->_message = "";
+}
+
+int User::socket() const
+{
+	return this->_socket;
 }
 
 bool User::is_message_complete() const

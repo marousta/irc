@@ -7,7 +7,7 @@ Privmsg::Privmsg(ft::Server& server)
 	: Command(server, "PRIVMSG", PRIVMSG_DESC)
 {	}
 
-void	Privmsg::execute(std::vector<std::string> args)
+void	Privmsg::execute(User *sender, const std::vector<std::string>& args)
 {	}
 
 }}

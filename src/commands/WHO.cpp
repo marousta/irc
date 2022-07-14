@@ -7,7 +7,7 @@ Who::Who(ft::Server& server)
 	: Command(server, "WHO", WHO_DESC)
 {	}
 
-void	Who::execute(std::vector<std::string> args)
+void	Who::execute(User *sender, const std::vector<std::string>& args)
 {	}
 
 }}
