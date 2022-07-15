@@ -10,7 +10,12 @@ Join::Join(ft::Server& server)
 
 void	Join::execute(User *sender, const std::vector<std::string>& args)
 {
-	this->_server.create_channel(sender, args);
+	try {
+		this->_server.join_channel(sender, args);
+	}
+	catch (std::exception &e) {
+		throw; /* TODO: error something when wrong */
+	}
 }
 
 }}

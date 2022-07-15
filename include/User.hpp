@@ -23,9 +23,7 @@ class User {
 
 	public:
 		User(int socket, const std::string& host, int port, Server *server);
-
 		User(const User& other);
-
 		~User();
 
 		User& operator=(const User& other);
@@ -35,6 +33,7 @@ class User {
 
 		const std::string& host() const;
 		const std::string& nick() const;
+		const std::string& username() const;
 		const std::string& message() const;
 
 		size_t response_queue_size() const;

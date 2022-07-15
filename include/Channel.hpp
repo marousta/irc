@@ -15,7 +15,7 @@ class User;
 class Channel {
 	private:
 		std::string			_name;
-		uint32_t			_mode;
+		short				_mode;
 		std::string			_key;
 		std::string			_topic;
 		std::vector<User *>	_users;
@@ -26,18 +26,26 @@ class Channel {
 		Channel(User *creator, std::string name, std::string key);
 		~Channel();
 
-		void	set_mode(uint32_t mode);
-		void	unset_mode(uint32_t mode);
+		short	mode(void) const;
+		void	mode(short mode);
+		void	unset_mode(short mode);
 
-		void	set_topic(std::string topic);
+		const std::string&	key(void) const;
+
+		const std::string&	topic(void) const;
+		void				topic(std::string topic);
 
 		void	add_user(User *user);
 		void	remove_user(User *user);
 
-		void	add_operator(User *user);
-		void	remove_operator(User *user);
+		void	add_operator(User *op);
+		void	remove_operator(User *op);
 
 		void	dispatch_message(User *sender, std::string message);
+
+	private:
+		std::vector<User *>::iterator find_user(User *);
+		std::vector<User *>::iterator find_operator(User *);
 };
 
 }

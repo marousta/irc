@@ -50,6 +50,11 @@ const std::string& User::nick() const
 	return this->_nick;
 }
 
+const std::string& User::username() const
+{
+	return this->_username;
+}
+
 const std::string& User::message() const
 {
 	return this->_message;
@@ -69,7 +74,7 @@ std::string User::response_queue_pop()
 
 void User::send(const std::string& message)
 {
-	this->_response_queue.push(message);
+	this->_response_queue.push(message + "\n");
 }
 
 void User::append_to_message(const std::string& chunk)
@@ -94,7 +99,7 @@ void User::process_message()
 		return ;
 	}
 	this->_server->process_message(*this, this->_message);
-	this->_message = "";
+	this->_message.clear();
 }
 
 int User::socket() const

@@ -66,6 +66,9 @@ Server::~Server()
 	for (std::map<std::string, Command *>::iterator it = this->_commands.begin(); it != this->_commands.end(); ++it) {
 		delete it->second;
 	}
+	for (std::map<std::string, Channel *>::iterator it = this->_channels.begin(); it != this->_channels.end(); ++it) {
+		delete it->second;
+	}
 	::close(this->_socket);
 }
 
@@ -92,7 +95,7 @@ void Server::poll()
 	socklen_t addrlen = sizeof(addr);
 	int client_fd = ::accept(this->_socket, (struct sockaddr*)&addr, &addrlen);
 	if (client_fd >= 0) {
-		User *user = new User(client_fd, inet_ntoa(addr.sin_addr), ntohs(addr.sin_port), &*this);
+		User *user = new User(client_fd, inet_ntoa(addr.sin_addr), ntohs(addr.sin_port), this);
 		std::cout << user->host() << ":" << user->port() << " logged in" << std::endl;
 		this->_users.push_back(user);
 		this->_pollfds.push_back((struct pollfd) {
@@ -205,6 +208,25 @@ int	 Server::find_user_index(const User& user)
 	return -1;
 }
 
+int	 Server::find_user_username(const std::string& username) const
+{
+	for (size_t i = 0; i < this->_users.size(); ++i) {
+		if (this->_users[i]->username() == username) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+User*	Server::get_user(const std::string& username) const
+{
+	int index = this->find_user_username(username);
+	if (index == -1) {
+		throw; /* TODO: error no user found */
+	}
+	return this->_users[index];
+}
+
 void Server::parse_message(const std::string& message, std::string& command, std::vector<std::string>& params)
 {
 	const char *str = &message[0]; /* TODO: unused */
@@ -280,6 +302,38 @@ void	Server::create_channel(User *creator, const std::vector<std::string> &args)
 		this->_channels[args[0]] = new Channel(creator, args[0], args[1]);
 	} else {
 		throw; /* TODO: error invalid number of args */
+	}
+}
+
+void	Server::join_channel(User *user, const std::vector<std::string>& args)
+{
+	try {
+		Channel *channel = this->_channels.at(args[0]);
+
+		if (channel->mode() & MODE_K) {
+			if (channel->key() == args[1]) {
+				channel->add_user(user);
+			} else {
+				throw; /* TODO: error invalid key */
+			}
+		} else {
+			channel->add_user(user);
+		}
+	}
+	catch (std::exception &e) {
+		(void)e;
+		this->create_channel(user, args);
+	}
+}
+
+Channel*	Server::get_channel(const std::string& name)
+{
+	try {
+		return this->_channels.at(name);
+	}
+	catch (std::exception &e) {
+		(void)e;
+		throw; /* TODO: error channel not found */
 	}
 }
 

@@ -8,6 +8,8 @@ Part::Part(ft::Server& server)
 {	}
 
 void	Part::execute(User *sender, const std::vector<std::string>& args)
-{	}
+{
+
+}
 
 }}

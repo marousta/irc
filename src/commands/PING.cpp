@@ -10,7 +10,7 @@ Ping::Ping(ft::Server& server)
 
 void	Ping::execute(User *sender, const std::vector<std::string>& args)
 {
-	sender->send("PONG\n");
+	sender->send("PONG");
 }
 
 }}
