@@ -19,7 +19,7 @@ void	Quit::execute(User *sender, const std::vector<std::string>& args) {
 	if (i >= 0) {
 		this->_server.disconnect(i);
 	} else {
-		/* TODO: user not connected, this should not happen */
+		std::cerr << "WARNING: User quit but was not connected. This should NOT happen" << std::endl;
 	}
 
 	/* TODO:

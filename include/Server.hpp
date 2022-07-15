@@ -29,6 +29,7 @@ class Server {
 	private:
 		void parse_message(const std::string& message, std::string& command, std::vector<std::string>& params);
 		void setup_commands();
+		void send_error(User& user, const std::string& err);
 };
 
 }

@@ -157,8 +157,15 @@ void Server::process_message(User& sender, const std::string& message)
 		cmd->execute(&sender, params);
 	} catch (std::exception& e) {
 		(void)e;
-		std::cerr << "WARNING: Unknown command: '" << command << "'" << std::endl;
+		this->send_error(sender, std::string() + ERR_UNKNOWNCOMMAND(command));
+	} catch (const std::string& err) {
+		this->send_error(sender, err);
 	}
+}
+
+void Server::send_error(User& user, const std::string& err)
+{
+
 }
 
 int	 Server::find_user_index(const User& user)
