@@ -12,6 +12,10 @@ Privmsg::Privmsg(ft::Server& server)
 
 void	Privmsg::execute(User *sender, const std::vector<std::string>& args)
 {
+	if (!sender->registered()) {
+		throw; /* TODO; error access denied */
+	}
+
 	std::string formated_message = ":" + sender->nick() + " " + this->_name + " " + args[0] + " :" + args[1];
 
 	const char *name = &args[0][0];

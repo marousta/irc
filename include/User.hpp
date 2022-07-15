@@ -10,7 +10,6 @@ class Server;
 class User {
 	private:
 		bool					_did_enter;
-		bool					_did_register;
 		int						_socket;
 		int						_port;
 		std::string				_host;
@@ -41,10 +40,13 @@ class User {
 
 		void send(const std::string& message);
 
+		bool registered() const;
 		void disconnect();
 		void append_to_message(const std::string& chunk);
 
 	private:
+		bool check_register() const;
+
 		void process_message();
 		bool is_message_complete() const;
 };
