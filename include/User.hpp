@@ -8,16 +8,17 @@ class Server;
 
 class User {
 	private:
-		bool		_did_enter;
-		bool		_did_register;
-		int			_socket;
-		int			_port;
-		std::string	_host;
-		std::string	_nick;
-		std::string	_username;
-		std::string	_realname;
-		std::string	_message;
-		Server		*_server;
+		bool			_did_enter;
+		bool			_did_register;
+		int				_socket;
+		int				_port;
+		std::string		_host;
+		std::string		_nick;
+		std::string		_username;
+		std::string		_realname;
+		std::string		_message;
+		Server			*_server;
+
 	public:
 		User(int socket, const std::string& host, int port, Server *server);
 

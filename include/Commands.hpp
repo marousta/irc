@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <vector>
 
 #include "Replies.hpp"
 #include "Errors.hpp"
@@ -36,6 +37,7 @@ namespace cmd {
 
 CLASS_COMMAND(Help);
 CLASS_COMMAND(Join);
+//CLASS_COMMAND(Mode); /* TODO: change channel modes (actually does only add topic -> optional) */
 CLASS_COMMAND(Part);
 CLASS_COMMAND(Ping);
 CLASS_COMMAND(Privmsg);
