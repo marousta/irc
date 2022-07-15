@@ -12,7 +12,7 @@ Join::Join(ft::Server& server)
 void	Join::execute(User *sender, const std::vector<std::string>& args)
 {
 	if (!sender->registered()) {
-		throw; /* TODO; error access denied */
+		throw ERR_NOTREGISTERED;
 	}
 
 	try {
