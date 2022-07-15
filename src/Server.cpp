@@ -183,7 +183,7 @@ void Server::process_message(User& sender, const std::string& message)
 		cmd->execute(&sender, params);
 	} catch (std::exception& e) {
 		(void)e;
-		this->send_error(sender, std::string() + ERR_UNKNOWNCOMMAND(command));
+		this->send_error(sender, ERR_UNKNOWNCOMMAND(command));
 	} catch (const std::string& err) {
 		this->send_error(sender, err);
 	}
@@ -191,7 +191,8 @@ void Server::process_message(User& sender, const std::string& message)
 
 void Server::send_error(User& user, const std::string& err)
 {
-	std::cerr << "Unhandled error to " << user.host() << ":" << user.port() << ": " << err << std::endl;
+	user.send(err + "\n");
+	// std::cerr << "Unhandled error to " << user.host() << ":" << user.port() << ": " << err << std::endl;
 }
 
 int	 Server::find_user_index(const User& user)
