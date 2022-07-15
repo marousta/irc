@@ -71,6 +71,18 @@ Server::~Server()
 
 void Server::poll()
 {
+
+	for (size_t i = 0; i < this->_pollfds.size(); ++i) {
+		struct pollfd&	pfd = this->_pollfds[i];
+		User			*user = this->_users[i];
+
+		if (user->response_queue_size() > 0) {
+			pfd.events |= POLLOUT;
+		} else {
+			pfd.events &= ~POLLOUT;
+		}
+	}
+
 	int poll_ret = ::poll(&this->_pollfds[0], this->_pollfds.size(), 30);
 	if (poll_ret < 0) {
 		throw std::string("Could not poll on socket: ") + ::strerror(errno);
@@ -111,10 +123,27 @@ void Server::poll()
 				if (i-- == 0) {
 					break ;
 				}
+				continue ;
+			}
+		}
+		if (pfd.revents & POLLOUT) {
+			if (user->response_queue_size() == 0) {
+				/* TODO: Should not happen, but if it happens it is VERY concerning */
+			}
+			std::string message = user->response_queue_pop();
+			if (::send(user->socket(), &message[0], message.size(), 0) < 0) {
+				this->disconnect(i);
+				if (i-- == 0) {
+					break ;
+				}
+				continue ;
 			}
 		}
 		if (pfd.revents & POLLHUP) {
 			this->disconnect(i);
+			if (i-- == 0) {
+				break ;
+			}
 		}
 	}
 }
@@ -162,7 +191,7 @@ void Server::process_message(User& sender, const std::string& message)
 
 void Server::send_error(User& user, const std::string& err)
 {
-
+	std::cerr << "Unhandled error to " << user.host() << ":" << user.port() << ": " << err << std::endl;
 }
 
 int	 Server::find_user_index(const User& user)

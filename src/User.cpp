@@ -7,7 +7,8 @@ namespace ft {
 
 User::User(int socket, const std::string& host, int port, Server *server)
 	:	_did_enter(false), _did_register(false), _socket(socket), _port(port),
-		_host(host), _nick(""), _username(""), _realname(""), _message(""), _server(server)
+		_host(host), _nick(""), _username(""), _realname(""), _message(""), _server(server),
+		_response_queue()
 {	}
 
 User::User(const User& other)
@@ -29,6 +30,7 @@ User& User::operator=(const User& other)
 	this->_realname = other._realname;
 	this->_message = other._message;
 	this->_server = other._server;
+	this->_response_queue = other._response_queue;
 
 	return *this;
 }
@@ -51,6 +53,23 @@ const std::string& User::nick() const
 const std::string& User::message() const
 {
 	return this->_message;
+}
+
+size_t User::response_queue_size() const
+{
+	return this->_response_queue.size();
+}
+
+std::string User::response_queue_pop()
+{
+	std::string ret = this->_response_queue.front();
+	this->_response_queue.pop();
+	return ret;
+}
+
+void User::send(const std::string& message)
+{
+	this->_response_queue.push(message);
 }
 
 void User::append_to_message(const std::string& chunk)
