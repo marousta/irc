@@ -1,29 +1,25 @@
 #include <algorithm>
 
+#include "Errors.hpp"
 #include "Channel.hpp"
 #include "User.hpp"
 
 namespace ft {
 
 Channel::Channel(User *creator, std::string name)
-	: _name(name)
+	: _name(this->format_name(name)), _mode(MODE_DEFAULT), _key(""), _topic("")
 {
-	this->mode(MODE_DEFAULT);
-	this->_key = "";
-	this->topic("");
 	this->add_user(creator);
 	this->add_operator(creator);
-	std::cout << "Channel " << name << " created." << std::endl;
+	std::cout << "Channel " << this->_name << " created." << std::endl;
 }
 
 Channel::Channel(User *creator, std::string name, std::string key)
-	: _name(name), _key(key)
+	: _name(this->format_name(name)), _mode(MODE_K), _key(key), _topic("")
 {
-	this->mode(MODE_K);
-	this->topic("");
 	this->add_user(creator);
 	this->add_operator(creator);
-	std::cout << "Channel " << name << " created with key '" << key << "'." << std::endl;
+	std::cout << "Channel " << this->_name << " created with key '" << key << "'." << std::endl;
 }
 
 Channel::~Channel()
@@ -46,9 +42,9 @@ void	Channel::unset_mode(short mode)
 	this->_mode &= ~mode;
 }
 
-const std::string&	Channel::key(void) const
+bool Channel::key_compare(std::string key) const
 {
-	return this->_key;
+	return this->_key == key;
 }
 
 const std::string&	Channel::topic(void) const
@@ -65,7 +61,7 @@ void	Channel::add_user(User *user)
 {
 	std::vector<User *>::iterator it = this->find_user(user);
 	if (it != this->_users.end()) {
-		throw; /* TODO: error user already in channel */
+		throw ERR_USERONCHANNEL(user->nick, this->_name);
 	}
 	this->_users.push_back(user);
 }
@@ -105,6 +101,15 @@ void	Channel::dispatch_message(User *sender, std::string message)
 		}
 		(*user)->send(message);
 	}
+}
+
+std::string	Channel::format_name(std::string name)
+{
+	const char *n = &name[0];
+	if (n[0] != '#') {
+		return std::string("#") + name;
+	}
+	return name;
 }
 
 std::vector<User *>::iterator Channel::find_user(User *user)

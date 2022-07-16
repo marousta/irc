@@ -1,5 +1,5 @@
-#include "Commands.hpp"
 #include "User.hpp"
+#include "Commands.hpp"
 
 namespace ft {
 namespace cmd {

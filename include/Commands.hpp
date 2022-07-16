@@ -2,10 +2,11 @@
 
 #include <iostream>
 #include <vector>
+#include <sstream>
 
+#include "Helpers.hpp"
 #include "Replies.hpp"
 #include "Errors.hpp"
-#include "Helpers.hpp"
 
 #define CLASS_COMMAND(name) \
 class name : public Command {													\
@@ -14,6 +15,17 @@ class name : public Command {													\
 																				\
 		void	execute(ft::User *sender, const std::vector<std::string>& args);	\
 };
+
+/* TODO: OWO WATCH THIS */
+template<typename T>
+std::string convert_string(T value)
+{
+	std::stringstream string;
+
+	string << value;
+
+	return string.str();
+}
 
 namespace ft {
 
@@ -34,6 +46,9 @@ class Command {
 };
 
 namespace cmd {
+
+void	validate_nick(std::string nick);
+void	successfully_registered(ft::User *user, Server *server);
 
 CLASS_COMMAND(Help);
 CLASS_COMMAND(Join);

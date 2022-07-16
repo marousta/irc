@@ -1,7 +1,7 @@
-#include "Commands.hpp"
 #include "Server.hpp"
 #include "Channel.hpp"
 #include "User.hpp"
+#include "Commands.hpp"
 
 namespace ft {
 namespace cmd {
@@ -13,6 +13,9 @@ Privmsg::Privmsg(ft::Server& server)
 void	Privmsg::execute(ft::User *sender, const std::vector<std::string>& args)
 {
 	/* TODO: Check arguments */
+	if (args.size() < 2) {
+		throw ERR_NEEDMOREPARAMS("PRIVMSG");
+	}
 
 	if (!sender->entered()) {
 		throw ERR_NOLOGIN;
@@ -30,20 +33,16 @@ void	Privmsg::execute(ft::User *sender, const std::vector<std::string>& args)
 			Channel *channel = this->_server.get_channel(args[0]);
 			channel->dispatch_message(sender, formated_message);
 		}
-		catch (std::exception& e) {
-			(void)e;
-			throw; /* TODO: error no channel found */
+		catch (std::string) {
+			throw;
 		}
 	} else {
 		/* message to user */
-		try {
-			ft::User *receiver = this->_server.get_user(args[0]);
-			receiver->send(formated_message);
+		ft::User *receiver = this->_server.get_user_nick(args[0]);
+		if (!receiver) {
+			throw ERR_NOSUCHNICK(sender->nick(), args[0]);
 		}
-		catch (std::exception& e) {
-			(void)e;
-			throw; /* TODO: error user not found */
-		}
+		receiver->send(formated_message);
 	}
 }
 

@@ -1,12 +1,12 @@
 #pragma once
 
+#include <arpa/inet.h>
 #include <iostream>
 #include <vector>
 #include <map>
-#include <arpa/inet.h>
 
-#include "Commands.hpp"
 #include "Channel.hpp"
+#include "Commands.hpp"
 
 namespace ft {
 
@@ -33,15 +33,19 @@ class Server {
 		void	process_message(User& sender, const std::string& message);
 
 		int  	find_user_index(const User& user);
-		User*	get_user(const std::string& username) const;
+		User*	get_user_username(const std::string& username) const;
+		User*	get_user_nick(const std::string& nick) const;
+		size_t	user_count(void) const;
 
 		void		create_channel(User *creator, const std::vector<std::string>& args);
 		void		delete_channel();
 		void		join_channel(User *user, const std::vector<std::string>& args);
 		Channel*	get_channel(const std::string& name);
+		size_t		channel_count(void) const;
 
 	private:
 		int		find_user_username(const std::string& username) const;
+		int		find_user_nick(const std::string& nick) const;
 
 		void 	parse_message(const std::string& message, std::string& command, std::vector<std::string>& params);
 		void 	setup_commands();

@@ -1,6 +1,7 @@
-#include "Server.hpp"
 #include <cstdlib>
 #include <cstring>
+
+#include "Server.hpp"
 
 bool check_digit(const char *str)
 {

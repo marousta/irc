@@ -7,8 +7,8 @@
 #include <algorithm>
 
 #include "Server.hpp"
-#include "User.hpp"
 #include "Channel.hpp"
+#include "User.hpp"
 
 namespace ft {
 
@@ -230,13 +230,37 @@ int	 Server::find_user_username(const std::string& username) const
 	return -1;
 }
 
-User*	Server::get_user(const std::string& username) const
+int	 Server::find_user_nick(const std::string& nick) const
+{
+	for (size_t i = 0; i < this->_users.size(); ++i) {
+		if (this->_users[i]->nick() == nick) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+User*	Server::get_user_username(const std::string& username) const
 {
 	int index = this->find_user_username(username);
 	if (index == -1) {
-		throw; /* TODO: error no user found */
+		return NULL;
 	}
 	return this->_users[index];
+}
+
+User*	Server::get_user_nick(const std::string& nick) const
+{
+	int index = this->find_user_nick(nick);
+	if (index == -1) {
+		return NULL;
+	}
+	return this->_users[index];
+}
+
+size_t	Server::user_count(void) const
+{
+	return this->_users.size();
 }
 
 void Server::parse_message(const std::string& message, std::string& command, std::vector<std::string>& params)
@@ -308,25 +332,35 @@ void Server::parse_message(const std::string& message, std::string& command, std
 
 void	Server::create_channel(User *creator, const std::vector<std::string> &args) /* TODO: make it cleaner */
 {
+	std::string channel_name = Channel::format_name(args[0]);
+
 	if (args.size() == 1) {
-		this->_channels[args[0]] = new Channel(creator, args[0]);
+		this->_channels[channel_name] = new Channel(creator, channel_name);
 	} else if (args.size() == 2) {
-		this->_channels[args[0]] = new Channel(creator, args[0], args[1]);
+		this->_channels[channel_name] = new Channel(creator, channel_name, args[1]);
 	} else {
-		throw; /* TODO: error invalid number of args */
+		throw ERR_NEEDMOREPARAMS("JOIN");
 	}
 }
 
 void	Server::join_channel(User *user, const std::vector<std::string>& args)
 {
+	if (!args.size()) {
+		throw ERR_NEEDMOREPARAMS("JOIN");
+	}
+
+	std::string channel_name = Channel::format_name(args[0]);
+
 	try {
-		Channel *channel = this->_channels.at(args[0]);
+		std::cout << channel_name << std::endl;
+
+		Channel *channel = this->_channels.at(channel_name);
 
 		if (channel->mode() & MODE_K) {
-			if (channel->key() == args[1]) {
+			if (channel->key_compare(args[1])) {
 				channel->add_user(user);
 			} else {
-				throw; /* TODO: error invalid key */
+				throw ERR_BADCHANNELKEY(channel_name);
 			}
 		} else {
 			channel->add_user(user);
@@ -337,10 +371,11 @@ void	Server::join_channel(User *user, const std::vector<std::string>& args)
 		this->create_channel(user, args);
 	}
 	/* TODO: below is temporary */
-	user->send(std::string("JOIN ") + args[0]);
-	user->send(RPL_NOTOPIC(user->nick(), args[0])); /* TODO: condition for topic */
-	user->send(RPL_NAMREPLY(user->nick(), args[0], user->nick()));
-	user->send(RPL_ENDOFNAMES(user->nick(), args[0]));
+	std::string nick = user->nick();
+	user->send(JOIN(nick, user->username(), channel_name));
+	user->send(RPL_NOTOPIC(nick, channel_name)); /* TODO: condition for topic */
+	user->send(RPL_NAMREPLY(nick, channel_name, nick));
+	user->send(RPL_ENDOFNAMES(nick, channel_name));
 }
 
 Channel*	Server::get_channel(const std::string& name)
@@ -350,8 +385,13 @@ Channel*	Server::get_channel(const std::string& name)
 	}
 	catch (std::exception &e) {
 		(void)e;
-		throw; /* TODO: error channel not found */
+		throw ERR_NOSUCHCHANNEL(name);
 	}
+}
+
+size_t	Server::channel_count(void) const
+{
+	return this->_channels.size();
 }
 
 }

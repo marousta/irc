@@ -1,8 +1,8 @@
 #pragma once
 
+#include <stdint.h>
 #include <iostream>
 #include <vector>
-#include <stdint.h>
 
 #define MODE_DEFAULT	0
 #define MODE_T			2
@@ -30,7 +30,7 @@ class Channel {
 		void	mode(short mode);
 		void	unset_mode(short mode);
 
-		const std::string&	key(void) const;
+		bool	key_compare(std::string key) const;
 
 		const std::string&	topic(void) const;
 		void				topic(std::string topic);
@@ -43,6 +43,7 @@ class Channel {
 
 		void	dispatch_message(User *sender, std::string message);
 
+		static std::string	format_name(std::string name);
 	private:
 		std::vector<User *>::iterator find_user(User *);
 		std::vector<User *>::iterator find_operator(User *);

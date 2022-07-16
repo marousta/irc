@@ -7,8 +7,8 @@ namespace ft {
 
 User::User(int socket, const std::string& host, int port, Server *server, bool enter)
 	:	_did_enter(enter), _socket(socket), _port(port),
-		_host(host), _nick(""), _username(""), _realname(""), _message(""), _server(server),
-		_response_queue()
+		_host(host), _nick(""), _username(""), _realname(""),
+		_message(""), _server(server), _response_queue()
 {	}
 
 User::User(const User& other)
@@ -132,27 +132,17 @@ int User::socket() const
 
 bool User::is_message_complete() const
 {
-	return	!this->_message.empty()
-			&&
-			this->_message[this->_message.size() - 1] == '\n';
+	return !this->_message.empty() && this->_message[this->_message.size() - 1] == '\n';
 }
 
 bool User::registered() const
 {
-	if (this->_did_enter && this->check_register()) {
-		return true;
-	} else {
-		return false;
-	}
+	return this->_did_enter && this->check_register();
 }
 
 bool User::check_register() const
 {
-	if (this->_nick == "" && this->_username == "") {
-		return false;
-	} else {
-		return true;
-	}
+	return this->_nick != "" && this->_username != "";
 }
 
 void User::disconnect()
