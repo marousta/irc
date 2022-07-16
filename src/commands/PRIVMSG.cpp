@@ -12,6 +12,8 @@ Privmsg::Privmsg(ft::Server& server)
 
 void	Privmsg::execute(ft::User *sender, const std::vector<std::string>& args)
 {
+	/* TODO: Check arguments */
+
 	if (!sender->entered()) {
 		throw ERR_NOLOGIN;
 	}
