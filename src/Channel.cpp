@@ -42,7 +42,18 @@ void	Channel::unset_mode(short mode)
 	this->_mode &= ~mode;
 }
 
-bool Channel::key_compare(std::string key) const
+void	Channel::key(std::string key)
+{
+	this->_key = key;
+
+	if (this->_key.size()) {
+		this->mode(MODE_K);
+	} else {
+		this->unset_mode(MODE_K);
+	}
+}
+
+bool	Channel::key_compare(std::string key) const
 {
 	return this->_key == key;
 }
@@ -55,6 +66,12 @@ const std::string&	Channel::topic(void) const
 void	Channel::topic(std::string topic)
 {
 	this->_topic = topic;
+
+	if (this->_topic.size()) {
+		this->mode(MODE_T);
+	} else {
+		this->unset_mode(MODE_T);
+	}
 }
 
 void	Channel::add_user(User *user)
@@ -73,6 +90,26 @@ void	Channel::remove_user(User *user)
 		throw; /* TODO: error user not found */
 	}
 	this->_users.erase(it);
+}
+
+bool	Channel::user_exist(User *user)
+{
+	std::vector<User *>::iterator it = this->find_user(user);
+	if (it == this->_users.end()) {
+		return false;
+	}
+	return true;
+}
+
+const std::string	Channel::list_users(void) const
+{
+	std::string users;
+
+	for (std::vector<User *>::const_iterator it = this->_users.begin(); it != this->_users.end(); it++) {
+		users += (*it)->nick() + " ";
+	}
+	std::cout << users << std::endl;
+	return users;
 }
 
 void	Channel::add_operator(User *op)

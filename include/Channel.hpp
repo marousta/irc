@@ -30,13 +30,16 @@ class Channel {
 		void	mode(short mode);
 		void	unset_mode(short mode);
 
+		void	key(std::string key);
 		bool	key_compare(std::string key) const;
 
 		const std::string&	topic(void) const;
 		void				topic(std::string topic);
 
-		void	add_user(User *user);
-		void	remove_user(User *user);
+		void				add_user(User *user);
+		void				remove_user(User *user);
+		bool				user_exist(User *user);
+		const std::string	list_users(void) const;
 
 		void	add_operator(User *op);
 		void	remove_operator(User *op);

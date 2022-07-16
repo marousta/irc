@@ -52,7 +52,7 @@ void	successfully_registered(ft::User *user, Server *server);
 
 CLASS_COMMAND(Help);
 CLASS_COMMAND(Join);
-//CLASS_COMMAND(Mode); /* TODO: change channel modes (actually does only add topic -> optional) */
+CLASS_COMMAND(Mode);
 CLASS_COMMAND(Nick);
 CLASS_COMMAND(Part);
 CLASS_COMMAND(Pass);

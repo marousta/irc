@@ -60,6 +60,7 @@ void Server::setup_commands()
 {
 	this->_commands["HELP"] = new cmd::Help(*this);
 	this->_commands["JOIN"] = new cmd::Join(*this);
+	this->_commands["MODE"] = new cmd::Mode(*this);
 	this->_commands["NICK"] = new cmd::Nick(*this);
 	this->_commands["PART"] = new cmd::Part(*this);
 	this->_commands["PASS"] = new cmd::Pass(*this);
@@ -86,7 +87,10 @@ Server::~Server()
 
 void Server::poll()
 {
-
+	/*
+		FIXME: malloc(): unaligned tcache chunk detected
+		zsh: IOT instruction (core dumped)  ./ircserv
+	*/
 	for (size_t i = 0; i < this->_pollfds.size(); ++i) {
 		struct pollfd&	pfd = this->_pollfds[i];
 		User			*user = this->_users[i];
@@ -265,7 +269,7 @@ size_t	Server::user_count(void) const
 
 void Server::parse_message(const std::string& message, std::string& command, std::vector<std::string>& params)
 {
-	const char *str = &message[0]; /* TODO: unused */
+	const char *str = &message[0]; /* FIXME: unused */
 	command.clear();
 	params.clear();
 
@@ -352,8 +356,6 @@ void	Server::join_channel(User *user, const std::vector<std::string>& args)
 	std::string channel_name = Channel::format_name(args[0]);
 
 	try {
-		std::cout << channel_name << std::endl;
-
 		Channel *channel = this->_channels.at(channel_name);
 
 		if (channel->mode() & MODE_K) {
@@ -370,11 +372,20 @@ void	Server::join_channel(User *user, const std::vector<std::string>& args)
 		(void)e;
 		this->create_channel(user, args);
 	}
+
+	/* FIXME: segfault when joining from ref Client */
 	/* TODO: below is temporary */
 	std::string nick = user->nick();
 	user->send(JOIN(nick, user->username(), channel_name));
-	user->send(RPL_NOTOPIC(nick, channel_name)); /* TODO: condition for topic */
-	user->send(RPL_NAMREPLY(nick, channel_name, nick));
+
+	Channel *channel = this->_channels.at(channel_name);
+	if (channel->mode() & MODE_T) {
+		user->send(RPL_TOPIC(nick, channel_name, channel->topic()));
+	} else {
+		user->send(RPL_NOTOPIC(nick, channel_name));
+	}
+
+	user->send(RPL_NAMREPLY(nick, channel_name, channel->list_users()));
 	user->send(RPL_ENDOFNAMES(nick, channel_name));
 }
 
