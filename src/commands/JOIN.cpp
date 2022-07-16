@@ -9,7 +9,7 @@ Join::Join(ft::Server& server)
 	: Command(server, "JOIN", JOIN_DESC)
 {	}
 
-void	Join::execute(User *sender, const std::vector<std::string>& args)
+void	Join::execute(ft::User *sender, const std::vector<std::string>& args)
 {
 	if (!sender->entered()) {
 		throw ERR_NOLOGIN;

@@ -12,7 +12,7 @@ class name : public Command {													\
 	public:																		\
 		name(ft::Server& serv);													\
 																				\
-		void	execute(User *sender, const std::vector<std::string>& args);	\
+		void	execute(ft::User *sender, const std::vector<std::string>& args);	\
 };
 
 namespace ft {
@@ -30,7 +30,7 @@ class Command {
 		Command(ft::Server& serv, std::string name, std::string desc);
 		virtual ~Command();
 
-		virtual void	execute(User *sender, const std::vector<std::string>& args) = 0;
+		virtual void	execute(ft::User *sender, const std::vector<std::string>& args) = 0;
 };
 
 namespace cmd {
@@ -38,11 +38,13 @@ namespace cmd {
 CLASS_COMMAND(Help);
 CLASS_COMMAND(Join);
 //CLASS_COMMAND(Mode); /* TODO: change channel modes (actually does only add topic -> optional) */
+CLASS_COMMAND(Nick);
 CLASS_COMMAND(Part);
 CLASS_COMMAND(Pass);
 CLASS_COMMAND(Ping);
 CLASS_COMMAND(Privmsg);
 CLASS_COMMAND(Quit);
+CLASS_COMMAND(User);
 CLASS_COMMAND(Who);
 
 }}

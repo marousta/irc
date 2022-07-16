@@ -21,6 +21,9 @@ class User {
 		std::queue<std::string>	_response_queue;
 
 	public:
+		/* socket = fd */
+		/* host = ip */
+		/* enter = password needed or not */
 		User(int socket, const std::string& host, int port, Server *server, bool enter);
 		User(const User& other);
 		~User();
@@ -33,8 +36,13 @@ class User {
 		void entered(bool state);
 
 		const std::string& host() const;
+
 		const std::string& nick() const;
+		void nick(std::string nick);
+
 		const std::string& username() const;
+		void username(std::string username, std::string realname);
+
 		const std::string& message() const;
 
 		size_t response_queue_size() const;

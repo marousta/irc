@@ -7,7 +7,7 @@ Help::Help(ft::Server& server)
 	: Command(server, "HELP", HELP_DESC)
 {	}
 
-void	Help::execute(User *sender, const std::vector<std::string>& args)
+void	Help::execute(ft::User *sender, const std::vector<std::string>& args)
 {	}
 
 }}

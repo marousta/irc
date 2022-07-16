@@ -59,9 +59,23 @@ const std::string& User::nick() const
 	return this->_nick;
 }
 
+void User::nick(std::string nick)
+{
+	this->_nick = nick;
+}
+
 const std::string& User::username() const
 {
 	return this->_username;
+}
+
+void User::username(std::string username, std::string realname)
+{
+	if (this->_username != "") {
+		throw ERR_ALREADYREGISTERED;
+	}
+	this->_username = username;
+	this->_realname = realname;
 }
 
 const std::string& User::message() const

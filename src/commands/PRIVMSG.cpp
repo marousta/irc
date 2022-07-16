@@ -10,7 +10,7 @@ Privmsg::Privmsg(ft::Server& server)
 	: Command(server, "PRIVMSG", PRIVMSG_DESC)
 {	}
 
-void	Privmsg::execute(User *sender, const std::vector<std::string>& args)
+void	Privmsg::execute(ft::User *sender, const std::vector<std::string>& args)
 {
 	if (!sender->entered()) {
 		throw ERR_NOLOGIN;
@@ -35,7 +35,7 @@ void	Privmsg::execute(User *sender, const std::vector<std::string>& args)
 	} else {
 		/* message to user */
 		try {
-			User *receiver = this->_server.get_user(args[0]);
+			ft::User *receiver = this->_server.get_user(args[0]);
 			receiver->send(formated_message);
 		}
 		catch (std::exception& e) {

@@ -8,6 +8,7 @@
 
 #include "Server.hpp"
 #include "User.hpp"
+#include "Channel.hpp"
 
 namespace ft {
 
@@ -59,11 +60,13 @@ void Server::setup_commands()
 {
 	this->_commands["HELP"] = new cmd::Help(*this);
 	this->_commands["JOIN"] = new cmd::Join(*this);
+	this->_commands["NICK"] = new cmd::Nick(*this);
 	this->_commands["PART"] = new cmd::Part(*this);
 	this->_commands["PASS"] = new cmd::Pass(*this);
 	this->_commands["PING"] = new cmd::Ping(*this);
 	this->_commands["PRIVMSG"] = new cmd::Privmsg(*this);
 	this->_commands["QUIT"] = new cmd::Quit(*this);
+	this->_commands["USER"] = new cmd::User(*this);
 	this->_commands["WHO"] = new cmd::Who(*this);
 }
 
@@ -333,6 +336,11 @@ void	Server::join_channel(User *user, const std::vector<std::string>& args)
 		(void)e;
 		this->create_channel(user, args);
 	}
+	/* TODO: below is temporary */
+	user->send(std::string("JOIN ") + args[0]);
+	user->send(RPL_NOTOPIC(user->nick(), args[0])); /* TODO: condition for topic */
+	user->send(RPL_NAMREPLY(user->nick(), args[0], user->nick()));
+	user->send(RPL_ENDOFNAMES(user->nick(), args[0]));
 }
 
 Channel*	Server::get_channel(const std::string& name)

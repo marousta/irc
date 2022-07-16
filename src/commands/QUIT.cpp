@@ -12,7 +12,7 @@ Quit::Quit(ft::Server& server)
 	: Command(server, "QUIT", QUIT_DESC)
 {	}
 
-void	Quit::execute(User *sender, const std::vector<std::string>& args) {
+void	Quit::execute(ft::User *sender, const std::vector<std::string>& args) {
 	if (args.size() != 1) {
 		std::cerr << "WARNING: 'QUIT' should have 1 argument" << std::endl;
 	}

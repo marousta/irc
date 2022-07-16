@@ -7,4 +7,5 @@
 #define ERR_UNKNOWNCOMMAND(cmd)				std::string(":") + SERVER_NAME + " 421 " + cmd + " :Unknown command"
 #define ERR_NOLOGIN							std::string(":") + SERVER_NAME + " 444 :User not logged in"
 #define ERR_NOTREGISTERED					std::string(":") + SERVER_NAME + " 451 :You have not registered"
+#define ERR_ALREADYREGISTERED				std::string(":") + SERVER_NAME + " 462 :You may not reregister"
 #define ERR_PASSWDMISMATCH					std::string(":") + SERVER_NAME + " 464 :Password incorrect"
