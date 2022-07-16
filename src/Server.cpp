@@ -357,7 +357,7 @@ void	Server::join_channel(User *user, const std::vector<std::string>& args)
 		Channel *channel = this->_channels.at(channel_name);
 
 		if (channel->mode() & MODE_K) {
-			if (channel->key_compare(args[1])) {
+			if (args.size() == 2 && channel->key_compare(args[1])) {
 				channel->add_user(user);
 			} else {
 				throw ERR_BADCHANNELKEY(channel_name);
