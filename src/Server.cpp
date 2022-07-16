@@ -53,11 +53,16 @@ Server::Server(int port, std::string pass)
 
 bool	Server::check_pass(std::string pass) const
 {
+	if (!this->_pass.size()) {
+		return true;
+	}
 	return this->_pass == pass;
 }
 
 void Server::setup_commands()
 {
+	this->_commands["DEBUG"] = new cmd::Debug(*this);
+
 	this->_commands["HELP"] = new cmd::Help(*this);
 	this->_commands["JOIN"] = new cmd::Join(*this);
 	this->_commands["MODE"] = new cmd::Mode(*this);
@@ -210,7 +215,7 @@ void Server::process_message(User& sender, const std::string& message)
 
 void Server::send_error(User& user, const std::string& err)
 {
-	user.send(err + "\n");
+	user.send(err);
 	// std::cerr << "Unhandled error to " << user.host() << ":" << user.port() << ": " << err << std::endl;
 }
 
@@ -264,7 +269,14 @@ User*	Server::get_user_nick(const std::string& nick) const
 
 size_t	Server::user_count(void) const
 {
-	return this->_users.size();
+	size_t count = 0;
+
+	for (std::vector<User *>::const_iterator it = this->_users.begin(); it != this->_users.end(); ++it) {
+		if ((*it)->registered()) {
+			++count;
+		}
+	}
+	return count;
 }
 
 void Server::parse_message(const std::string& message, std::string& command, std::vector<std::string>& params)
@@ -403,6 +415,48 @@ Channel*	Server::get_channel(const std::string& name)
 size_t	Server::channel_count(void) const
 {
 	return this->_channels.size();
+}
+
+void	Server::print_debug(User *sender) const
+{
+	if (this->_pass.size()) {
+		sender->send("PASSWORD: True");
+	} else {
+		sender->send("PASSWORD: False");
+	}
+
+	sender->send("USERS: " + convert_string(this->_users.size()));
+
+	std::string users_list = "{\n";
+	for (std::vector<User *>::const_iterator it = this->_users.begin(); it != this->_users.end(); ++it) {
+		if ((*it)->registered()) {
+			users_list += "\t" + (*it)->nick() + "[" + (*it)->username() + "],\n";
+		} else {
+			users_list += "\tunknown,\n";
+		}
+	}
+	users_list += "}";
+	if (this->_users.size()) {
+		sender->send(users_list);
+	}
+
+	sender->send("CHANNELS: " + convert_string(this->_channels.size()));
+
+	std::string channel_list = "{\n";
+	for (std::map<std::string, Channel *>::const_iterator it = this->_channels.begin(); it != this->_channels.end(); ++it) {
+		std::string mode = "";
+		if (it->second->mode() & MODE_K) {
+			mode += "k";
+		}
+		if (it->second->mode() & MODE_T) {
+			mode += "t[" + it->second->topic() + "]";
+		}
+		channel_list += "\t" + it->first + " (" + (!mode.size() ? "Default" : mode) + "),\n";
+	}
+	channel_list += "}";
+	if (this->_channels.size()) {
+		sender->send(channel_list);
+	}
 }
 
 }

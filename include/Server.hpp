@@ -43,6 +43,8 @@ class Server {
 		Channel*	get_channel(const std::string& name);
 		size_t		channel_count(void) const;
 
+		void	print_debug(User *sender) const;
+
 	private:
 		int		find_user_username(const std::string& username) const;
 		int		find_user_nick(const std::string& nick) const;

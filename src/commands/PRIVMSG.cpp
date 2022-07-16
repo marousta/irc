@@ -12,16 +12,15 @@ Privmsg::Privmsg(ft::Server& server)
 
 void	Privmsg::execute(ft::User *sender, const std::vector<std::string>& args)
 {
-	/* TODO: Check arguments */
-	if (args.size() < 2) {
-		throw ERR_NEEDMOREPARAMS("PRIVMSG");
-	}
-
 	if (!sender->entered()) {
 		throw ERR_NOLOGIN;
 	}
 	if (!sender->registered()) {
 		throw ERR_NOTREGISTERED;
+	}
+
+	if (args.size() < 2) {
+		throw ERR_NEEDMOREPARAMS("PRIVMSG");
 	}
 
 	std::string channel_name = args[0];

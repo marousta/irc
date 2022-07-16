@@ -50,6 +50,8 @@ namespace cmd {
 void	validate_nick(std::string nick);
 void	successfully_registered(ft::User *user, Server *server);
 
+CLASS_COMMAND(Debug);
+
 CLASS_COMMAND(Help);
 CLASS_COMMAND(Join);
 CLASS_COMMAND(Mode);

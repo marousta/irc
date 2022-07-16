@@ -11,7 +11,10 @@ Pass::Pass(ft::Server& server)
 
 void	Pass::execute(ft::User *sender, const std::vector<std::string>& args)
 {
-	/* TODO; segfault args are empty */
+	if (args.size() != 1) {
+		throw ERR_NEEDMOREPARAMS("PASS");
+	}
+
 	if (this->_server.check_pass(args[0])) {
 		sender->entered(true);
 	} else {

@@ -1,3 +1,4 @@
+#include "User.hpp"
 #include "Commands.hpp"
 
 namespace ft {
@@ -8,6 +9,17 @@ Who::Who(ft::Server& server)
 {	}
 
 void	Who::execute(ft::User *sender, const std::vector<std::string>& args)
-{	}
+{
+	if (!sender->entered()) {
+		throw ERR_NOLOGIN;
+	}
+	if (!sender->registered()) {
+		throw ERR_NOTREGISTERED;
+	}
+
+	if (args.size() != 2) {
+		throw ERR_NEEDMOREPARAMS("WHO");
+	}
+}
 
 }}

@@ -1,3 +1,4 @@
+#include "User.hpp"
 #include "Commands.hpp"
 
 namespace ft {
@@ -9,7 +10,9 @@ Part::Part(ft::Server& server)
 
 void	Part::execute(ft::User *sender, const std::vector<std::string>& args)
 {
-
+	if (args.size() < 1 || args.size() > 2) {
+		throw ERR_NEEDMOREPARAMS("WHO");
+	}
 }
 
 }}

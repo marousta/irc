@@ -18,6 +18,10 @@ void	Join::execute(ft::User *sender, const std::vector<std::string>& args)
 		throw ERR_NOTREGISTERED;
 	}
 
+	if (args.size() < 1 || args.size() > 2) {
+		throw ERR_NEEDMOREPARAMS("JOIN");
+	}
+
 	try {
 		this->_server.join_channel(sender, args);
 	}

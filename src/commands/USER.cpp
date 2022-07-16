@@ -24,7 +24,7 @@ User::User(ft::Server& server)
 
 void	User::execute(ft::User *sender, const std::vector<std::string>& args)
 {
-	if (args.size() < 4) {
+	if (args.size() != 4) {
 		throw ERR_NEEDMOREPARAMS("USER");
 	}
 

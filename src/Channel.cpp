@@ -106,9 +106,10 @@ const std::string	Channel::list_users(void) const
 	std::string users;
 
 	for (std::vector<User *>::const_iterator it = this->_users.begin(); it != this->_users.end(); it++) {
-		users += (*it)->nick() + " ";
+		if ((*it)->registered()) {
+			users += (*it)->nick() + " ";
+		}
 	}
-	std::cout << users << std::endl;
 	return users;
 }
 
@@ -128,6 +129,15 @@ void	Channel::remove_operator(User *op)
 		throw; /* TODO: error op not found */
 	}
 	this->_operators.erase(it);
+}
+
+bool	Channel::check_operator(User *user) const
+{
+	std::vector<User *>::const_iterator it = this->find_operator(user);
+	if (it == this->_operators.end()) {
+		return false;
+	}
+	return true;
 }
 
 void	Channel::dispatch_message(User *sender, std::string message)
@@ -154,9 +164,20 @@ std::vector<User *>::iterator Channel::find_user(User *user)
 	return std::find(this->_users.begin(), this->_users.end(), user);
 }
 
+std::vector<User *>::const_iterator Channel::find_user(User *user) const
+{
+	return std::find(this->_users.begin(), this->_users.end(), user);
+}
+
 std::vector<User *>::iterator Channel::find_operator(User *op)
 {
 	return std::find(this->_operators.begin(), this->_operators.end(), op);
 }
+
+std::vector<User *>::const_iterator Channel::find_operator(User *op) const
+{
+	return std::find(this->_operators.begin(), this->_operators.end(), op);
+}
+
 
 }
