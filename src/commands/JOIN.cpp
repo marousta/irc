@@ -11,6 +11,9 @@ Join::Join(ft::Server& server)
 
 void	Join::execute(User *sender, const std::vector<std::string>& args)
 {
+	if (!sender->entered()) {
+		throw ERR_NOLOGIN;
+	}
 	if (!sender->registered()) {
 		throw ERR_NOTREGISTERED;
 	}

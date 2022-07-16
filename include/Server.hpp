@@ -14,6 +14,7 @@ class User;
 
 class Server {
 	private:
+		std::string									_pass;
 		std::vector<User *> 						_users;
 		std::vector<struct pollfd>					_pollfds;
 		std::map<std::string, Command *>			_commands;
@@ -21,19 +22,22 @@ class Server {
 		int											_socket;
 
 	public:
-		Server(int port);
+		Server(int port = 6667, std::string pass = "");
 		~Server();
+
+		bool	check_pass(std::string pass) const;
 
 		void	poll();
 		void	disconnect(size_t user_index);
 
 		void	process_message(User& sender, const std::string& message);
+
 		int  	find_user_index(const User& user);
 		User*	get_user(const std::string& username) const;
 
-		void	create_channel(User *creator, const std::vector<std::string>& args);
-		void	delete_channel();
-		void	join_channel(User *user, const std::vector<std::string>& args);
+		void		create_channel(User *creator, const std::vector<std::string>& args);
+		void		delete_channel();
+		void		join_channel(User *user, const std::vector<std::string>& args);
 		Channel*	get_channel(const std::string& name);
 
 	private:

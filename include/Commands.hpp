@@ -39,6 +39,7 @@ CLASS_COMMAND(Help);
 CLASS_COMMAND(Join);
 //CLASS_COMMAND(Mode); /* TODO: change channel modes (actually does only add topic -> optional) */
 CLASS_COMMAND(Part);
+CLASS_COMMAND(Pass);
 CLASS_COMMAND(Ping);
 CLASS_COMMAND(Privmsg);
 CLASS_COMMAND(Quit);

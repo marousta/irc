@@ -21,7 +21,7 @@ class User {
 		std::queue<std::string>	_response_queue;
 
 	public:
-		User(int socket, const std::string& host, int port, Server *server);
+		User(int socket, const std::string& host, int port, Server *server, bool enter);
 		User(const User& other);
 		~User();
 
@@ -29,6 +29,8 @@ class User {
 
 		int port() const;
 		int socket() const;
+		bool entered() const;
+		void entered(bool state);
 
 		const std::string& host() const;
 		const std::string& nick() const;

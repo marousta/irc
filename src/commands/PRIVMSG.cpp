@@ -12,6 +12,9 @@ Privmsg::Privmsg(ft::Server& server)
 
 void	Privmsg::execute(User *sender, const std::vector<std::string>& args)
 {
+	if (!sender->entered()) {
+		throw ERR_NOLOGIN;
+	}
 	if (!sender->registered()) {
 		throw ERR_NOTREGISTERED;
 	}

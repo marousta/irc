@@ -11,8 +11,8 @@
 
 namespace ft {
 
-Server::Server(int port)
-	: _users(), _pollfds(), _socket(-1)
+Server::Server(int port, std::string pass)
+	: _pass(pass), _users(), _pollfds(), _socket(-1)
 {
 	this->_socket = ::socket(AF_INET, SOCK_STREAM, 0);
 	if (this->_socket < 0) {
@@ -44,7 +44,15 @@ Server::Server(int port)
 	}
 
 	std::cout << "IRC Server listening on port " << port << std::endl;
+	if (pass != "") {
+		std::cout << "Password: " << pass << std::endl;
+	}
 	this->setup_commands();
+}
+
+bool	Server::check_pass(std::string pass) const
+{
+	return this->_pass == pass;
 }
 
 void Server::setup_commands()
@@ -52,6 +60,7 @@ void Server::setup_commands()
 	this->_commands["HELP"] = new cmd::Help(*this);
 	this->_commands["JOIN"] = new cmd::Join(*this);
 	this->_commands["PART"] = new cmd::Part(*this);
+	this->_commands["PASS"] = new cmd::Pass(*this);
 	this->_commands["PING"] = new cmd::Ping(*this);
 	this->_commands["PRIVMSG"] = new cmd::Privmsg(*this);
 	this->_commands["QUIT"] = new cmd::Quit(*this);
@@ -95,7 +104,7 @@ void Server::poll()
 	socklen_t addrlen = sizeof(addr);
 	int client_fd = ::accept(this->_socket, (struct sockaddr*)&addr, &addrlen);
 	if (client_fd >= 0) {
-		User *user = new User(client_fd, inet_ntoa(addr.sin_addr), ntohs(addr.sin_port), this);
+		User *user = new User(client_fd, inet_ntoa(addr.sin_addr), ntohs(addr.sin_port), this, this->_pass == "");
 		std::cout << user->host() << ":" << user->port() << " logged in" << std::endl;
 		this->_users.push_back(user);
 		this->_pollfds.push_back((struct pollfd) {

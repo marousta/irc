@@ -5,8 +5,8 @@
 
 namespace ft {
 
-User::User(int socket, const std::string& host, int port, Server *server)
-	:	_did_enter(false), _socket(socket), _port(port),
+User::User(int socket, const std::string& host, int port, Server *server, bool enter)
+	:	_did_enter(enter), _socket(socket), _port(port),
 		_host(host), _nick(""), _username(""), _realname(""), _message(""), _server(server),
 		_response_queue()
 {	}
@@ -37,6 +37,16 @@ User& User::operator=(const User& other)
 int User::port() const
 {
 	return this->_port;
+}
+
+bool User::entered() const
+{
+	return this->_did_enter;
+}
+
+void User::entered(bool state)
+{
+	this->_did_enter = state;
 }
 
 const std::string& User::host() const
