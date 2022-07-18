@@ -1,3 +1,5 @@
+#include <cstring>
+
 #include "Server.hpp"
 #include "User.hpp"
 #include "Commands.hpp"
@@ -20,6 +22,10 @@ void Pass::parse(const std::string& msg)
 
 void	Pass::execute(ft::User *sender, const std::string& msg)
 {
+	if (sender->registered()) {
+		throw ERR_ALREADYREGISTERED;
+	}
+
 	this->parse(msg);
 
 	if (this->_server.check_pass(this->_pass)) {
@@ -27,8 +33,6 @@ void	Pass::execute(ft::User *sender, const std::string& msg)
 	} else {
 		throw ERR_PASSWDMISMATCH;
 	}
-
-	//TODO:  ERR_ALREADYREGISTERED (462)
 }
 
 }}
