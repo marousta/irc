@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 
-#define MODE_DEFAULT	0
+#define MODE_DEFAULT	1
 #define MODE_T			2
 #define MODE_K			4
 

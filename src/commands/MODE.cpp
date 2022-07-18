@@ -36,10 +36,6 @@ void	Mode::execute(ft::User *sender, const std::string& msg)
 	std::string channel_name = this->_args[0];
 	Channel *channel = this->_server.get_channel(channel_name);
 
-	if (!channel->check_operator(sender)) {
-		throw ERR_CHANOPRIVSNEEDED(channel_name);
-	}
-
 	char *arg = &this->_args[0][0];
 	if (this->_args.size() == 1) {
 		/* remove mode only - and not params is accepted */
@@ -63,6 +59,10 @@ void	Mode::execute(ft::User *sender, const std::string& msg)
 		sender->send("MODE " + channel_name + " " + ret);
 
 		return ;
+	}
+
+	if (!channel->check_operator(sender)) {
+		throw ERR_CHANOPRIVSNEEDED(channel_name);
 	}
 
 	arg = &this->_args[1][0];
