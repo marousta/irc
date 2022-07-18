@@ -1,7 +1,7 @@
 SRCDIR = src
 OBJDIR = obj
 
-CFLAGS = -Wall -Wextra -std=c++98 -g3
+CFLAGS = -Wall -Wextra -std=c++98 -g3 -fsanitize=address
 
 CXX = g++
 

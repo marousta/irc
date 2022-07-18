@@ -39,11 +39,13 @@ void Part::parse(const std::string& msg)
 
 void	Part::execute(ft::User *sender, const std::string& msg)
 {
-	//TODO: Check if sender is registered
+	if (!sender->registered()) {
+		throw ERR_NOTREGISTERED;
+	}
 
 	this->parse(msg);
 
-	// TODO:
+	//TODO
 }
 
 }}

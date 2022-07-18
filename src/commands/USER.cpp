@@ -1,3 +1,6 @@
+#include <cstdlib>
+#include <cstring>
+
 #include "Server.hpp"
 #include "User.hpp"
 #include "Commands.hpp"
@@ -84,6 +87,10 @@ void User::parse(const std::string& msg)
 
 void	User::execute(ft::User *sender, const std::string& msg)
 {
+	if (sender->registered()) {
+		throw ERR_ALREADYREGISTERED;
+	}
+
 	this->parse(msg);
 
 	sender->username(this->_username, this->_realname);

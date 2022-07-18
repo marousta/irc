@@ -13,6 +13,8 @@ void Help::parse(const std::string& msg)
 }
 
 void	Help::execute(ft::User *sender, const std::string& msg)
-{	}
+{
+	//TODO
+}
 
 }}

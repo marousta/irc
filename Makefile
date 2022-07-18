@@ -23,7 +23,7 @@ re:
 	${MAKE} all
 
 ${TARGET}: ${OBJS_}
-	${CXX} $^ -o $@
+	${CXX} ${CFLAGS} $^ -o $@
 
 ${OBJDIR}:
 	mkdir -p ${OBJDIRS_}

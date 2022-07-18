@@ -30,7 +30,6 @@ class name : public Command {										\
 #define CLASS_COMMAND_END() \
 };
 
-/* TODO: OWO WATCH THIS */
 template<typename T>
 std::string convert_string(const T& value)
 {

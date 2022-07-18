@@ -21,7 +21,8 @@ void Quit::parse(const std::string& msg)
 	this->_reason = std::string("Quit: ") + &msg[1];
 }
 
-void	Quit::execute(ft::User *sender, const std::string& msg) {
+void	Quit::execute(ft::User *sender, const std::string& msg)
+{
 	this->parse(msg);
 
 	int i = this->_server.find_user_index(*sender);

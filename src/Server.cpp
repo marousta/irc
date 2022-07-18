@@ -161,6 +161,7 @@ void Server::poll()
 				}
 				continue ;
 			}
+			std::cout << "\e[0;34mSERVER\e[0m " << message;
 		}
 		if (pfd.revents & POLLHUP) {
 			this->disconnect(i);
@@ -183,6 +184,8 @@ void Server::disconnect(size_t user_index)
 
 void Server::process_message(User& sender, const std::string& message)
 {
+	std::cout << "\e[0;32mCLIENT\e[0m " << message << std::endl;
+
 	std::string command;
 	std::vector<std::string> params;
 
@@ -353,10 +356,8 @@ void Server::parse_message(const std::string& message, std::string& command, std
 	}
 }
 
-void	Server::create_channel(User *creator, const std::string& name, const std::string& key)
+void	Server::create_channel(User *creator, const std::string& channel_name, const std::string& key)
 {
-	std::string channel_name = Channel::format_name(name);
-
 	if (key.empty()) {
 		this->_channels[channel_name] = new Channel(creator, channel_name);
 	} else {
@@ -364,10 +365,8 @@ void	Server::create_channel(User *creator, const std::string& name, const std::s
 	}
 }
 
-void	Server::join_channel(User *user, const std::string& name, const std::string& key)
+void	Server::join_channel(User *user, const std::string& channel_name, const std::string& key)
 {
-	std::string channel_name = Channel::format_name(name);
-
 	try {
 		Channel *channel = this->_channels.at(channel_name);
 
@@ -383,7 +382,7 @@ void	Server::join_channel(User *user, const std::string& name, const std::string
 	}
 	catch (std::exception &e) {
 		(void)e;
-		this->create_channel(user, name, key);
+		this->create_channel(user, channel_name, key);
 	}
 
 	/* FIXME: segfault when joining from ref Client */

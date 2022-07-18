@@ -15,10 +15,17 @@ void Ping::parse(const std::string& msg)
 
 void	Ping::execute(ft::User *sender, const std::string& msg)
 {
+	if (!sender->entered()) {
+		throw ERR_NOLOGIN;
+	}
+	if (!sender->registered()) {
+		throw ERR_NOTREGISTERED;
+	}
+
 	this->parse(msg);
 	//TODO: Ping is more complex
 	//TODO: Check if user is registered ?
-	sender->send("PONG");
+	sender->send("PONG " + msg);
 }
 
 }}

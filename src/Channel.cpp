@@ -7,7 +7,7 @@
 namespace ft {
 
 Channel::Channel(User *creator, std::string name)
-	: _name(this->format_name(name)), _mode(MODE_DEFAULT), _key(""), _topic("")
+	: _name(name), _mode(MODE_DEFAULT), _key(""), _topic("")
 {
 	this->add_user(creator);
 	this->add_operator(creator);
@@ -15,7 +15,7 @@ Channel::Channel(User *creator, std::string name)
 }
 
 Channel::Channel(User *creator, std::string name, std::string key)
-	: _name(this->format_name(name)), _mode(MODE_K), _key(key), _topic("")
+	: _name(name), _mode(MODE_K), _key(key), _topic("")
 {
 	this->add_user(creator);
 	this->add_operator(creator);
@@ -148,15 +148,6 @@ void	Channel::dispatch_message(User *sender, std::string message)
 		}
 		(*user)->send(message);
 	}
-}
-
-std::string	Channel::format_name(std::string name)
-{
-	const char *n = &name[0];
-	if (n[0] != '#') {
-		return std::string("#") + name;
-	}
-	return name;
 }
 
 std::vector<User *>::iterator Channel::find_user(User *user)

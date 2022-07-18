@@ -29,15 +29,6 @@ void Join::parse(const std::string& msg)
 	std::stringstream channel_str(parts[0]);
 	std::vector<std::string> channels;
 	while (std::getline(channel_str, parsed, ',')) {
-		if (!parsed.empty() && parsed[0] == '#') {
-			if (parsed.size() > 50) {
-				throw ERR_NOSUCHCHANNEL(parsed);
-			}
-		} else {
-			if (parsed.size() > 49) {
-				throw ERR_NOSUCHCHANNEL(parsed);
-			}
-		}
 		channels.push_back(parsed);
 	}
 
@@ -57,9 +48,6 @@ void Join::parse(const std::string& msg)
 
 void	Join::execute(ft::User *sender, const std::string& msg)
 {
-	if (!sender->entered()) {
-		throw ERR_NOLOGIN;
-	}
 	if (!sender->registered()) {
 		throw ERR_NOTREGISTERED;
 	}
@@ -67,11 +55,15 @@ void	Join::execute(ft::User *sender, const std::string& msg)
 	this->parse(msg);
 
 	for (size_t i = 0; i < this->_channels.size(); ++i) {
-		try {
-			this->_server.join_channel(sender, this->_channels[i].first, this->_channels[i].second);
-		}
-		catch (std::exception &e) {
-			throw; /* TODO: error something when wrong */
+		if (this->_channels[i].first[0] != '#' || this->_channels[i].first.size() > 50) {
+			sender->send(ERR_NOSUCHCHANNEL(this->_channels[i].first));
+		} else {
+			try {
+				this->_server.join_channel(sender, this->_channels[i].first, this->_channels[i].second);
+			}
+			catch (std::string& e) {
+				sender->send(e);
+			}
 		}
 	}
 }

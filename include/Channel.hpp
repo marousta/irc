@@ -47,7 +47,6 @@ class Channel {
 
 		void	dispatch_message(User *sender, std::string message);
 
-		static std::string	format_name(std::string name);
 	private:
 		std::vector<User *>::iterator find_user(User *);
 		std::vector<User *>::const_iterator find_user(User *) const;

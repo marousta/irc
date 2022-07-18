@@ -1,3 +1,5 @@
+#include <cstring>
+
 #include "Server.hpp"
 #include "Channel.hpp"
 #include "User.hpp"
@@ -15,7 +17,7 @@ void Privmsg::parse(const std::string& msg)
 	const char *mg = &msg[0];
 	std::string targets;
 
-	while (*mg != ' ') {
+	while (*mg && *mg != ' ') {
 		targets += *mg++;
 	}
 	if (!*mg) {
@@ -61,7 +63,30 @@ void	Privmsg::execute(ft::User *sender, const std::string& msg)
 	}
 
 	this->parse(msg);
-	//TODO:
+
+	for (std::vector<std::string>::iterator channel_name = this->_channels.begin(); channel_name != this->_channels.end(); ++channel_name) {
+		try {
+			Channel *channel = this->_server.get_channel(*channel_name);
+			channel->dispatch_message(sender, PRIVMSG(sender->nick(), *channel_name, this->_text));
+		}
+		catch (std::string& e) {
+			sender->send(e);
+		}
+	}
+
+	for (std::vector<std::string>::iterator receiver_nick = this->_users.begin(); receiver_nick != this->_users.end(); ++receiver_nick) {
+		try {
+			ft::User *receiver = this->_server.get_user_nick(*receiver_nick);
+
+			if (!receiver) {
+				throw ERR_NOSUCHNICK(sender->nick(), *receiver_nick);
+			}
+			receiver->send(PRIVMSG(sender->nick(), *receiver_nick, this->_text));
+		}
+		catch (std::string& e) {
+			sender->send(e);
+		}
+	}
 /*
 	std::string channel_name = args[0];
 	std::string formated_message = ":" + sender->nick() + " " + this->_name + " " + channel_name + " :" + args[1];
