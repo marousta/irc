@@ -8,9 +8,14 @@ Debug::Debug(ft::Server& server)
 	: Command(server, "DEBUG", PART_DESC)
 {	}
 
-void	Debug::execute(ft::User *sender, const std::vector<std::string>& args)
+void Debug::parse(const std::string& msg)
 {
-	(void)args;
+	(void)msg;
+}
+
+void	Debug::execute(ft::User *sender, const std::string& msg)
+{
+	this->parse(msg);
 	this->_server.print_debug(sender);
 }
 

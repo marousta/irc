@@ -22,18 +22,72 @@ User::User(ft::Server& server)
 	: Command(server, "USER", PART_DESC)
 {	}
 
-void	User::execute(ft::User *sender, const std::vector<std::string>& args)
+void User::parse(const std::string& msg)
 {
-	if (args.size() != 4) {
-		throw ERR_NEEDMOREPARAMS("USER");
+	std::vector<std::string> parts;
+
+	const char *mg = &msg[0];
+	std::string current;
+	while (*mg && parts.size() != 3) {
+		if (*mg == ' ') {
+			if (current.empty()) {
+				++mg;
+				continue ;
+			}
+			parts.push_back(current);
+			current.clear();
+			++mg;
+			continue ;
+		}
+		current += *mg++;
 	}
 
-	try {
-		sender->username(args[0], args[3]);
+	if (parts.size() != 3) {
+		throw ERR_NEEDMOREPARAMS(this->_name);
 	}
-	catch (std::string) {
-		throw;
+
+	for (size_t i = 0; i < 3; ++i) {
+		if (::strstr(&parts[i][0], ":")) {
+			throw ERR_NEEDMOREPARAMS(this->_name);
+		}
 	}
+
+	while (*mg == ' ') {
+		++mg;
+	}
+
+	/* TODO: Handle if the full name is a single word ?*/
+	if (*mg != ':') {
+		throw ERR_NEEDMOREPARAMS(this->_name);
+	}
+
+	++mg;
+
+	while (*mg) {
+		if (*mg == ':') {
+			throw ERR_NEEDMOREPARAMS(this->_name);
+		}
+		++mg;
+	}
+
+	for (size_t i = 0; i < parts[1].size(); ++i) {
+		if (!::isdigit(parts[1][i])) {
+			parts[1] = "0";
+			break ;
+		}
+	}
+
+	this->_realname = mg;
+	this->_username = parts[0];
+	this->_mode = ::atoi(&parts[1][0]);
+}
+
+void	User::execute(ft::User *sender, const std::string& msg)
+{
+	this->parse(msg);
+
+	sender->username(this->_username, this->_realname);
+
 	if (sender->registered()) {
 		successfully_registered(sender, &this->_server);
 	}

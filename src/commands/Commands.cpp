@@ -10,4 +10,7 @@ Command::Command(ft::Server& server, std::string name, std::string desc)
 Command::~Command()
 {	}
 
+void Command::parse(const std::string& msg)
+{	}
+
 }

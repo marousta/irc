@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <utility>
 #include <sstream>
 
 #include "Helpers.hpp"
@@ -9,16 +10,29 @@
 #include "Errors.hpp"
 
 #define CLASS_COMMAND(name) \
-class name : public Command {													\
-	public:																		\
-		name(ft::Server& serv);													\
-																				\
-		void	execute(ft::User *sender, const std::vector<std::string>& args);	\
+class name : public Command {										\
+	public:															\
+		name(ft::Server& serv);										\
+																	\
+		void	execute(ft::User *sender, const std::string& msg);	\
+		void	parse(const std::string& msg);						\
+};
+
+#define CLASS_COMMAND_BEGIN(name) \
+class name : public Command {										\
+	public:															\
+		name(ft::Server& serv);										\
+																	\
+		void	execute(ft::User *sender, const std::string& msg);	\
+		void	parse(const std::string& msg);						\
+	private:
+
+#define CLASS_COMMAND_END() \
 };
 
 /* TODO: OWO WATCH THIS */
 template<typename T>
-std::string convert_string(T value)
+std::string convert_string(const T& value)
 {
 	std::stringstream string;
 
@@ -42,26 +56,58 @@ class Command {
 		Command(ft::Server& serv, std::string name, std::string desc);
 		virtual ~Command();
 
-		virtual void	execute(ft::User *sender, const std::vector<std::string>& args) = 0;
+		virtual void	execute(ft::User *sender, const std::string& msg) = 0;
+
+	protected:
+		void parse(const std::string& msg);
 };
 
 namespace cmd {
 
-void	validate_nick(std::string nick);
+void	validate_nick(const std::string& nick);
 void	successfully_registered(ft::User *user, Server *server);
 
 CLASS_COMMAND(Debug);
 
 CLASS_COMMAND(Help);
-CLASS_COMMAND(Join);
-CLASS_COMMAND(Mode);
-CLASS_COMMAND(Nick);
-CLASS_COMMAND(Part);
-CLASS_COMMAND(Pass);
+
+CLASS_COMMAND_BEGIN(Join);
+std::vector< std::pair<std::string, std::string> > _channels;
+CLASS_COMMAND_END();
+
+CLASS_COMMAND_BEGIN(Mode);
+std::vector<std::string> _args;
+CLASS_COMMAND_END();
+
+CLASS_COMMAND_BEGIN(Nick);
+std::string _nick;
+CLASS_COMMAND_END();
+
+CLASS_COMMAND_BEGIN(Part);
+std::vector<std::string> _channels;
+std::string _reason;
+CLASS_COMMAND_END();
+
+CLASS_COMMAND_BEGIN(Pass);
+std::string _pass;
+CLASS_COMMAND_END();
+
 CLASS_COMMAND(Ping);
-CLASS_COMMAND(Privmsg);
-CLASS_COMMAND(Quit);
-CLASS_COMMAND(User);
-CLASS_COMMAND(Who);
+
+CLASS_COMMAND_BEGIN(Privmsg);
+std::vector<std::string> _channels;
+std::vector<std::string> _users;
+std::string _text;
+CLASS_COMMAND_END();
+
+CLASS_COMMAND_BEGIN(Quit);
+std::string _reason;
+CLASS_COMMAND_END();
+
+CLASS_COMMAND_BEGIN(User);
+std::string _username;
+int _mode;
+std::string _realname;
+CLASS_COMMAND_END();
 
 }}

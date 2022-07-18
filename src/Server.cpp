@@ -73,7 +73,6 @@ void Server::setup_commands()
 	this->_commands["PRIVMSG"] = new cmd::Privmsg(*this);
 	this->_commands["QUIT"] = new cmd::Quit(*this);
 	this->_commands["USER"] = new cmd::User(*this);
-	this->_commands["WHO"] = new cmd::Who(*this);
 }
 
 Server::~Server()
@@ -187,29 +186,37 @@ void Server::process_message(User& sender, const std::string& message)
 	std::string command;
 	std::vector<std::string> params;
 
-	try {
-		this->parse_message(message, command, params);
-	} catch (const std::string& err) {
-		std::cerr << "WARNING: Invalid message: " << err << std::endl;
-		return ;
+	const char *msg = &message[0];
+	while (*msg && *msg != ' ') {
+		command += *msg++;
 	}
-
-	if (command.empty()) {
-		std::cerr << "WARNING: Empty message";
-		return ;
+	while (*msg == ' ') {
+		++msg;
 	}
 
 	/* Put command in uppercase, just in case */
 	std::transform(command.begin(), command.end(), command.begin(), ::toupper);
 
+	if (command.empty()) {
+		std::cerr << "WARNING: Empty message";
+		return ;
+	}
+	if (::strstr(&command[0], ":")) {
+		std::cerr << "WARNING: Invalid message (colon in command)";
+		return ;
+	}
+
+	Command *cmd = 0;
 	try {
-		Command *cmd = this->_commands.at(command);
-		cmd->execute(&sender, params);
+		cmd = this->_commands.at(command);
+		cmd->execute(&sender, msg);
 	} catch (std::exception& e) {
 		(void)e;
 		this->send_error(sender, ERR_UNKNOWNCOMMAND(command));
+		return ;
 	} catch (const std::string& err) {
 		this->send_error(sender, err);
+		return ;
 	}
 }
 
@@ -346,32 +353,26 @@ void Server::parse_message(const std::string& message, std::string& command, std
 	}
 }
 
-void	Server::create_channel(User *creator, const std::vector<std::string> &args) /* TODO: make it cleaner */
+void	Server::create_channel(User *creator, const std::string& name, const std::string& key)
 {
-	std::string channel_name = Channel::format_name(args[0]);
+	std::string channel_name = Channel::format_name(name);
 
-	if (args.size() == 1) {
+	if (key.empty()) {
 		this->_channels[channel_name] = new Channel(creator, channel_name);
-	} else if (args.size() == 2) {
-		this->_channels[channel_name] = new Channel(creator, channel_name, args[1]);
 	} else {
-		throw ERR_NEEDMOREPARAMS("JOIN");
+		this->_channels[channel_name] = new Channel(creator, channel_name, key);
 	}
 }
 
-void	Server::join_channel(User *user, const std::vector<std::string>& args)
+void	Server::join_channel(User *user, const std::string& name, const std::string& key)
 {
-	if (!args.size()) {
-		throw ERR_NEEDMOREPARAMS("JOIN");
-	}
-
-	std::string channel_name = Channel::format_name(args[0]);
+	std::string channel_name = Channel::format_name(name);
 
 	try {
 		Channel *channel = this->_channels.at(channel_name);
 
 		if (channel->mode() & MODE_K) {
-			if (args.size() == 2 && channel->key_compare(args[1])) {
+			if (!key.empty() && channel->key_compare(key)) {
 				channel->add_user(user);
 			} else {
 				throw ERR_BADCHANNELKEY(channel_name);
@@ -382,7 +383,7 @@ void	Server::join_channel(User *user, const std::vector<std::string>& args)
 	}
 	catch (std::exception &e) {
 		(void)e;
-		this->create_channel(user, args);
+		this->create_channel(user, name, key);
 	}
 
 	/* FIXME: segfault when joining from ref Client */

@@ -9,17 +9,26 @@ Pass::Pass(ft::Server& server)
 	: Command(server, "PASS", PART_DESC)
 {	}
 
-void	Pass::execute(ft::User *sender, const std::vector<std::string>& args)
+void Pass::parse(const std::string& msg)
 {
-	if (args.size() != 1) {
-		throw ERR_NEEDMOREPARAMS("PASS");
+	if (::strstr(&msg[0], " ")) {
+		throw ERR_NEEDMOREPARAMS(this->_name);
 	}
 
-	if (this->_server.check_pass(args[0])) {
+	this->_pass = msg;
+}
+
+void	Pass::execute(ft::User *sender, const std::string& msg)
+{
+	this->parse(msg);
+
+	if (this->_server.check_pass(this->_pass)) {
 		sender->entered(true);
 	} else {
 		throw ERR_PASSWDMISMATCH;
 	}
+
+	//TODO:  ERR_ALREADYREGISTERED (462)
 }
 
 }}
