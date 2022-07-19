@@ -86,6 +86,7 @@ void	Channel::add_user(User *user)
 		throw ERR_USERONCHANNEL(user->nick, this->_name);
 	}
 	this->_users.push_back(user);
+	this->update_users_list(user);
 }
 
 void	Channel::remove_user(User *user)
@@ -156,6 +157,16 @@ void	Channel::dispatch_message(User *sender, std::string message)
 			continue;
 		}
 		(*user)->send(message);
+	}
+}
+
+void	Channel::update_users_list(User *sender) const
+{
+	for (std::vector<User *>::const_iterator user = this->_users.begin(); user != this->_users.end(); ++user) {
+		if (sender->nick() != (*user)->nick()) {
+			(*user)->send(RPL_NAMREPLY((*user)->nick(), this->_name, this->list_users()));
+			(*user)->send(RPL_ENDOFNAMES((*user)->nick(), this->_name));
+		}
 	}
 }
 

@@ -43,6 +43,7 @@ class Channel {
 		bool				user_exist(User *user);
 		const std::string	list_users(void) const;
 
+
 		void	add_operator(User *op);
 		void	remove_operator(User *op);
 		bool	check_operator(User *user) const;
@@ -50,6 +51,8 @@ class Channel {
 		void	dispatch_message(User *sender, std::string message);
 
 	private:
+		void	update_users_list(User *sender) const;
+
 		std::vector<User *>::iterator find_user(User *);
 		std::vector<User *>::const_iterator find_user(User *) const;
 		std::vector<User *>::iterator find_operator(User *);

@@ -64,6 +64,7 @@ void	Nick::execute(ft::User *sender, const std::string& msg)
 		throw ERR_NICKNAMEINUSE(this->_nick);
 	}
 
+	//TODO: sender->update_nick(); -> annonce to all channels
 	std::string old_nick = sender->nick();
 	sender->nick(this->_nick);
 
