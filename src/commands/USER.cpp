@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <cstring>
 
+#include "Colors.hpp"
 #include "Server.hpp"
 #include "User.hpp"
 #include "Commands.hpp"
@@ -14,7 +15,6 @@ void	successfully_registered(ft::User *user, Server *server)
 
 	user->send(RPL_WELCOME(nick, user->username()));
 	user->send(RPL_YOURHOST(nick));
-	user->send(RPL_CREATED(nick));
 	user->send(RPL_MYINFO(nick));
 	user->send(RPL_BOUNCE(nick));
 	user->send(RPL_LUSERCLIENT(nick, convert_string(server->user_count())));
@@ -22,10 +22,10 @@ void	successfully_registered(ft::User *user, Server *server)
 }
 
 User::User(ft::Server& server)
-	: Command(server, "USER", PART_DESC)
+	: Command(server, "USER", USER_DESC)
 {	}
 
-void User::parse(const std::string& msg)
+void	User::parse(const std::string& msg)
 {
 	std::vector<std::string> parts;
 
@@ -93,9 +93,10 @@ void	User::execute(ft::User *sender, const std::string& msg)
 
 	this->parse(msg);
 
-	sender->username(this->_username, this->_realname);
+	sender->username(this->_username);
+	sender->realname(this->_realname);
 
-	if (sender->registered()) {
+	if (!sender->registered() && sender->check_register()) {
 		successfully_registered(sender, &this->_server);
 	}
 }

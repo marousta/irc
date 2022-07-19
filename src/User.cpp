@@ -1,26 +1,33 @@
 #include <unistd.h>
 
+#include "Colors.hpp"
 #include "Server.hpp"
 #include "User.hpp"
 
 namespace ft {
 
 User::User(int socket, const std::string& host, int port, Server *server, bool enter)
-	:	_did_enter(enter), _socket(socket), _port(port),
+	:	_did_enter(enter), _did_register(false), _socket(socket), _port(port),
 		_host(host), _nick(""), _username(""), _realname(""),
 		_message(""), _server(server), _response_queue()
-{	}
+{
+	std::cout << YEL "New connection from " COLOR_RESET << this->_host << ":" << this->_port << YEL " waiting for login and registration" COLOR_RESET << std::endl;
+}
 
 User::User(const User& other)
 {
 	User::operator=(other);
 }
 
-User::~User() {	}
+User::~User()
+{
+	std::cout << YEL "User " COLOR_RESET << this->_nick << YEL " removed" COLOR_RESET << std::endl;
+}
 
-User& User::operator=(const User& other)
+User&	User::operator=(const User& other)
 {
 	this->_did_enter = other._did_enter;
+	this->_did_register = other._did_register;
 	this->_socket = other._socket;
 	this->_port = other._port;
 	this->_host = other._host;
@@ -34,73 +41,113 @@ User& User::operator=(const User& other)
 	return *this;
 }
 
-int User::port() const
+int		User::port() const
 {
 	return this->_port;
 }
 
-bool User::entered() const
+int		User::socket() const
+{
+	return this->_socket;
+}
+
+bool	User::entered() const
 {
 	return this->_did_enter;
 }
 
-void User::entered(bool state)
+void	User::entered(bool state)
 {
+	if (state) {
+		std::cout << YEL "Connection from " COLOR_RESET << this->_host << ":" << this->_port << YEL " successfully logged in" COLOR_RESET << std::endl;
+	}
 	this->_did_enter = state;
 }
 
-const std::string& User::host() const
+bool	User::registered() const
+{
+	return this->_did_enter && this->_did_register;
+}
+
+bool	User::check_register()
+{
+	if (this->_nick != "" && this->_username != "") {
+		std::cout << YEL "User " COLOR_RESET << this->_username + "!~" << this->_nick << ":" << this->_realname << YEL " joined" COLOR_RESET << std::endl;
+		this->_did_register = true;
+	}
+	return this->registered();
+}
+
+const	std::string& User::host() const
 {
 	return this->_host;
 }
 
-const std::string& User::nick() const
+const	std::string& User::nick() const
 {
 	return this->_nick;
 }
 
-void User::nick(std::string nick)
+void	User::nick(std::string& nick)
 {
 	this->_nick = nick;
 }
 
-const std::string& User::username() const
+const std::string&	User::username() const
 {
 	return this->_username;
 }
 
-void User::username(std::string username, std::string realname)
+void	User::username(std::string& username)
 {
 	if (this->_username != "") {
 		throw ERR_ALREADYREGISTERED;
 	}
 	this->_username = username;
+}
+
+const	std::string& User::realname() const
+{
+	return this->_realname;
+}
+
+void	User::realname(std::string& realname)
+{
+	if (this->_realname != "") {
+		throw ERR_ALREADYREGISTERED;
+	}
 	this->_realname = realname;
 }
 
-const std::string& User::message() const
+const std::string&	User::message() const
 {
 	return this->_message;
 }
 
-size_t User::response_queue_size() const
+size_t	User::response_queue_size() const
 {
 	return this->_response_queue.size();
 }
 
-std::string User::response_queue_pop()
+std::string		User::response_queue_pop()
 {
 	std::string ret = this->_response_queue.front();
 	this->_response_queue.pop();
 	return ret;
 }
 
-void User::send(const std::string& message)
+void	User::send(const std::string& message)
 {
 	this->_response_queue.push(message + "\n");
 }
 
-void User::append_to_message(const std::string& chunk)
+void	User::disconnect()
+{
+	::close(this->_socket);
+	this->_socket = -1;
+}
+
+void	User::append_to_message(const std::string& chunk)
 {
 	this->_message += chunk;
 	if (this->is_message_complete()) {
@@ -116,7 +163,7 @@ void User::append_to_message(const std::string& chunk)
 	}
 }
 
-void User::process_message()
+void	User::process_message()
 {
 	if (this->_message.empty()) {
 		return ;
@@ -125,30 +172,9 @@ void User::process_message()
 	this->_message.clear();
 }
 
-int User::socket() const
-{
-	return this->_socket;
-}
-
-bool User::is_message_complete() const
+bool	User::is_message_complete() const
 {
 	return !this->_message.empty() && this->_message[this->_message.size() - 1] == '\n';
-}
-
-bool User::registered() const
-{
-	return this->_did_enter && this->check_register();
-}
-
-bool User::check_register() const
-{
-	return this->_nick != "" && this->_username != "";
-}
-
-void User::disconnect()
-{
-	::close(this->_socket);
-	this->_socket = -1;
 }
 
 }

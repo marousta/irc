@@ -5,7 +5,7 @@
 #include <utility>
 #include <sstream>
 
-#include "Helpers.hpp"
+#include "Descriptions.hpp"
 #include "Replies.hpp"
 #include "Errors.hpp"
 
@@ -14,8 +14,8 @@ class name : public Command {										\
 	public:															\
 		name(ft::Server& serv);										\
 																	\
-		void	execute(ft::User *sender, const std::string& msg);	\
 		void	parse(const std::string& msg);						\
+		void	execute(ft::User *sender, const std::string& msg);	\
 };
 
 #define CLASS_COMMAND_BEGIN(name) \
@@ -23,8 +23,8 @@ class name : public Command {										\
 	public:															\
 		name(ft::Server& serv);										\
 																	\
-		void	execute(ft::User *sender, const std::string& msg);	\
 		void	parse(const std::string& msg);						\
+		void	execute(ft::User *sender, const std::string& msg);	\
 	private:
 
 #define CLASS_COMMAND_END() \

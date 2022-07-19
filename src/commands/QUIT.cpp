@@ -12,7 +12,7 @@ Quit::Quit(ft::Server& server)
 	: Command(server, "QUIT", QUIT_DESC)
 {	}
 
-void Quit::parse(const std::string& msg)
+void	Quit::parse(const std::string& msg)
 {
 	if (msg.empty() || msg[0] != ':') {
 		this->_reason = "Quit: ";

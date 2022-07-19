@@ -3,7 +3,7 @@
 
 #include "Server.hpp"
 
-bool check_digit(const char *str)
+bool	check_digit(const char *str)
 {
 	for (size_t i = 0; i < strlen(str); i++) {
 		if (!std::isdigit(str[i])) {
@@ -13,7 +13,7 @@ bool check_digit(const char *str)
 	return true;
 }
 
-bool parse_args(int ac, char **av, int *port, std::string *pass)
+bool	parse_args(int ac, char **av, int *port, std::string *pass)
 {
 	if (ac == 1) {
 		return true;
@@ -50,7 +50,7 @@ bool parse_args(int ac, char **av, int *port, std::string *pass)
 	return true;
 }
 
-int main(int ac, char **av)
+int	main(int ac, char **av)
 {
 	int port = 6667;
 	std::string pass = "";

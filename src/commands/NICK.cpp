@@ -1,3 +1,4 @@
+#include "Colors.hpp"
 #include "Server.hpp"
 #include "User.hpp"
 #include "Commands.hpp"
@@ -40,10 +41,10 @@ void	validate_nick(const std::string& nick)
 }
 
 Nick::Nick(ft::Server& server)
-	: Command(server, "NICK", PART_DESC)
+	: Command(server, "NICK", NICK_DESC)
 {	}
 
-void Nick::parse(const std::string& msg)
+void	Nick::parse(const std::string& msg)
 {
 	this->_nick.clear();
 	for (size_t i = 0; i < msg.size(); ++i) {
@@ -63,9 +64,15 @@ void	Nick::execute(ft::User *sender, const std::string& msg)
 		throw ERR_NICKNAMEINUSE(this->_nick);
 	}
 
+	std::string old_nick = sender->nick();
 	sender->nick(this->_nick);
-	if (sender->registered()) {
+
+	if (!sender->registered() && sender->check_register()) {
 		successfully_registered(sender, &this->_server);
+	}
+	if (sender->registered()) {
+		std::cout << YEL "User " COLOR_RESET << old_nick << YEL " changed his nickname to " COLOR_RESET << sender->nick() << std::endl;
+		sender->send(RPL_WELCOME(sender->nick(), sender->username()));
 	}
 }
 

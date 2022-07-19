@@ -7,10 +7,10 @@ namespace ft {
 namespace cmd {
 
 Mode::Mode(ft::Server& server)
-	: Command(server, "MODE", PART_DESC)
+	: Command(server, "MODE", MODE_DESC)
 {	}
 
-void Mode::parse(const std::string& msg)
+void	Mode::parse(const std::string& msg)
 {
 	this->_args.clear();
 	std::stringstream str(msg);

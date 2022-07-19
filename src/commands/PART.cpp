@@ -8,7 +8,7 @@ Part::Part(ft::Server& server)
 	: Command(server, "PART", PART_DESC)
 {	}
 
-void Part::parse(const std::string& msg)
+void	Part::parse(const std::string& msg)
 {
 	std::string parsed;
 	std::stringstream str(msg);

@@ -5,10 +5,10 @@ namespace ft {
 namespace cmd {
 
 Debug::Debug(ft::Server& server)
-	: Command(server, "DEBUG", PART_DESC)
+	: Command(server, "DEBUG", DEBUG_DESC)
 {	}
 
-void Debug::parse(const std::string& msg)
+void	Debug::parse(const std::string& msg)
 {
 	(void)msg;
 }

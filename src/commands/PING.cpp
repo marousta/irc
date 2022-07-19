@@ -8,7 +8,7 @@ Ping::Ping(ft::Server& server)
 	: Command(server, "PING", PING_DESC)
 {	}
 
-void Ping::parse(const std::string& msg)
+void	Ping::parse(const std::string& msg)
 {
 	(void)msg;
 }

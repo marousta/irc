@@ -11,7 +11,7 @@ Join::Join(ft::Server& server)
 	: Command(server, "JOIN", JOIN_DESC)
 {	}
 
-void Join::parse(const std::string& msg)
+void	Join::parse(const std::string& msg)
 {
 	std::string parsed;
 	std::stringstream str(msg);

@@ -4,26 +4,22 @@
 
 #define RPL_WELCOME(nick, username)								std::string(":") + SERVER_NAME + " 001 " + nick + " :Welcome to the Internet Relay Network " + username + "!~" + nick
 #define RPL_YOURHOST(nick)										std::string(":") + SERVER_NAME + " 002 " + nick + " :Your host is " + SERVER_NAME + ", running version " + SERVER_VER
-#define RPL_CREATED(nick)										std::string(":") + SERVER_NAME + " 003 " + nick + " :This server has been started <date>"
+// #define RPL_CREATED(nick)										std::string(":") + SERVER_NAME + " 003 " + nick + " :This server has been started <date>"
 #define RPL_MYINFO(nick)										std::string(":") + SERVER_NAME + " 004 " + nick + " " + SERVER_NAME + " " + SERVER_VER + " abBcCFiIoqrRswx abehiIklmMnoOPqQrRstvVz"
 #define RPL_BOUNCE(nick)										std::string(":") + SERVER_NAME + " 005 " + nick +	" RFC2812" \
 																													" IRCD=" + SERVER_VER + \
 																													" CHARSET=UTF-8" \
 																													" CASEMAPPING=ascii" \
-																													" PREFIX=(qaohv)~&@%+" \
+																													" PREFIX=" + SERVER_PREFIX + \
 																													" CHANTYPES=#" \
 																													" CHANMODES=kit" \
 																													" CHANLIMIT=#:" + convert_string(SERVER_CHANLIMIT) + \
 																													" CHANNELLEN=" + convert_string(SERVER_CHANNELLEN) + \
 																													" NICKLEN=" + convert_string(SERVER_NICKLEN) + \
 																													" USERLEN=" + convert_string(SERVER_USERLEN) + \
-																													" TOPICLEN=490" \
-																													" AWAYLEN=127" \
+																													" TOPICLEN=" + convert_string(SERVER_TOPICLEN) + \
 																													" KICKLEN=400 "\
 																													" MODES=5" \
-																													" MAXLIST=beI:50" \
-																													" EXCEPTS=e" \
-																													" INVEX=I PENALTY FNC" \
 																													" :are supported on this server"
 #define RPL_LUSERCLIENT(nick, users_count)						std::string(":") + SERVER_NAME + " 251 " + nick + " :There are " + users_count + " users"
 #define RPL_LUSERCHANNELS(nick, channels_count)					std::string(":") + SERVER_NAME + " 254 " + nick + " " + channels_count + " :channels formed"

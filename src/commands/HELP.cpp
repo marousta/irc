@@ -7,7 +7,7 @@ Help::Help(ft::Server& server)
 	: Command(server, "HELP", HELP_DESC)
 {	}
 
-void Help::parse(const std::string& msg)
+void	Help::parse(const std::string& msg)
 {
 
 }

@@ -8,10 +8,10 @@ namespace ft {
 namespace cmd {
 
 Pass::Pass(ft::Server& server)
-	: Command(server, "PASS", PART_DESC)
+	: Command(server, "PASS", PASS_DESC)
 {	}
 
-void Pass::parse(const std::string& msg)
+void	Pass::parse(const std::string& msg)
 {
 	if (msg.empty() || msg[0] != ':') {
 		throw ERR_NEEDMOREPARAMS(this->_name);

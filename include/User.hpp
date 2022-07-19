@@ -10,6 +10,7 @@ class Server;
 class User {
 	private:
 		bool					_did_enter;
+		bool					_did_register;
 		int						_socket;
 		int						_port;
 		std::string				_host;
@@ -30,33 +31,35 @@ class User {
 
 		User& operator=(const User& other);
 
-		int port() const;
-		int socket() const;
-		bool entered() const;
-		void entered(bool state);
+		int		port() const;
+		int		socket() const;
+		bool	entered() const;
+		void	entered(bool state);
+		bool	registered() const;
+
+		bool	check_register();
 
 		const std::string& host() const;
 
-		const std::string& nick() const;
-		void nick(std::string nick);
+		const std::string&	nick() const;
+		void				nick(std::string& nick);
 
-		const std::string& username() const;
-		void username(std::string username, std::string realname);
+		const std::string&	username() const;
+		void				username(std::string& username);
+		const std::string&	realname() const;
+		void				realname(std::string& realname);
 
 		const std::string& message() const;
 
-		size_t response_queue_size() const;
-		std::string response_queue_pop();
+		size_t		response_queue_size() const;
+		std::string	response_queue_pop();
 
 		void send(const std::string& message);
 
-		bool registered() const;
 		void disconnect();
 		void append_to_message(const std::string& chunk);
 
 	private:
-		bool check_register() const;
-
 		void process_message();
 		bool is_message_complete() const;
 };

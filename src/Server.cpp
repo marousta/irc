@@ -6,6 +6,7 @@
 #include <cstring>
 #include <algorithm>
 
+#include "Colors.hpp"
 #include "Server.hpp"
 #include "Channel.hpp"
 #include "User.hpp"
@@ -17,16 +18,16 @@ Server::Server(int port, std::string pass)
 {
 	this->_socket = ::socket(AF_INET, SOCK_STREAM, 0);
 	if (this->_socket < 0) {
-		throw std::string("Could not create socket: ") + ::strerror(errno);
+		throw std::string(RED "Could not create socket: ") + ::strerror(errno) + COLOR_RESET;
 	}
 
 	int opt = 1;
 	if (::setsockopt(this->_socket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
-		throw std::string("Could not set socket option 'SO_REUSEADDR': ") + ::strerror(errno);
+		throw std::string(RED "Could not set socket option 'SO_REUSEADDR': ") + ::strerror(errno) + COLOR_RESET;
 	}
 
 	if(::fcntl(this->_socket, F_SETFL, O_NONBLOCK) < 0) {
-		throw std::string("Could not enable non-blocking mode on socket: ") + ::strerror(errno);
+		throw std::string(RED "Could not enable non-blocking mode on socket: ") + ::strerror(errno) + COLOR_RESET;
 	}
 
 	struct sockaddr_in address;
@@ -37,11 +38,11 @@ Server::Server(int port, std::string pass)
 	address.sin_port = htons(port);
 
 	if(::bind(this->_socket, (struct sockaddr *)&address, sizeof(address)) < 0) {
-		throw std::string("Could not bind address to socket: ") + ::strerror(errno);
+		throw std::string(RED "Could not bind address to socket: ") + ::strerror(errno) + COLOR_RESET;
 	}
 
 	if(::listen(this->_socket, 99) < 0) {
-		throw std::string("Could not listen on socket: ") + ::strerror(errno);
+		throw std::string(RED "Could not listen on socket: ") + ::strerror(errno) + COLOR_RESET;
 	}
 
 	std::cout << "IRC Server listening on port " << port << std::endl;
@@ -49,30 +50,7 @@ Server::Server(int port, std::string pass)
 		std::cout << "Password: " << pass << std::endl;
 	}
 	this->setup_commands();
-}
-
-bool	Server::check_pass(std::string pass) const
-{
-	if (!this->_pass.size()) {
-		return true;
-	}
-	return this->_pass == pass;
-}
-
-void Server::setup_commands()
-{
-	this->_commands["DEBUG"] = new cmd::Debug(*this);
-
-	this->_commands["HELP"] = new cmd::Help(*this);
-	this->_commands["JOIN"] = new cmd::Join(*this);
-	this->_commands["MODE"] = new cmd::Mode(*this);
-	this->_commands["NICK"] = new cmd::Nick(*this);
-	this->_commands["PART"] = new cmd::Part(*this);
-	this->_commands["PASS"] = new cmd::Pass(*this);
-	this->_commands["PING"] = new cmd::Ping(*this);
-	this->_commands["PRIVMSG"] = new cmd::Privmsg(*this);
-	this->_commands["QUIT"] = new cmd::Quit(*this);
-	this->_commands["USER"] = new cmd::User(*this);
+	this->setup_ignored_commands();
 }
 
 Server::~Server()
@@ -89,7 +67,15 @@ Server::~Server()
 	::close(this->_socket);
 }
 
-void Server::poll()
+bool	Server::check_pass(std::string pass) const
+{
+	if (!this->_pass.size()) {
+		return true;
+	}
+	return this->_pass == pass;
+}
+
+void	Server::poll()
 {
 	/*
 		FIXME: malloc(): unaligned tcache chunk detected
@@ -120,7 +106,7 @@ void Server::poll()
 
 	int poll_ret = ::poll(&this->_pollfds[0], this->_pollfds.size(), 30);
 	if (poll_ret < 0) {
-		throw std::string("Could not poll on socket: ") + ::strerror(errno);
+		throw std::string(RED "Could not poll on socket: ") + ::strerror(errno) + COLOR_RESET;
 	}
 
 	struct sockaddr_in addr;
@@ -128,7 +114,6 @@ void Server::poll()
 	int client_fd = ::accept(this->_socket, (struct sockaddr*)&addr, &addrlen);
 	if (client_fd >= 0) {
 		User *user = new User(client_fd, inet_ntoa(addr.sin_addr), ntohs(addr.sin_port), this, this->_pass == "");
-		std::cout << user->host() << ":" << user->port() << " logged in" << std::endl;
 		this->_users.push_back(user);
 		this->_pollfds.push_back((struct pollfd) {
 			.fd = client_fd,
@@ -164,6 +149,7 @@ void Server::poll()
 		if (pfd.revents & POLLOUT) {
 			if (user->response_queue_size() == 0) {
 				/* TODO: Should not happen, but if it happens it is VERY concerning */
+				std::cerr << RED "WARNING: user response queue is empty. THIS SHOULD NOT HAPPEN !" COLOR_RESET << std::endl;
 			}
 			std::string message = user->response_queue_pop();
 			if (::send(user->socket(), &message[0], message.size(), 0) < 0) {
@@ -173,7 +159,7 @@ void Server::poll()
 				}
 				continue ;
 			}
-			std::cout << "\e[0;34mSERVER\e[0m " << message;
+			std::cout << BLU "SERVER " COLOR_RESET << message;
 		}
 		if (pfd.revents & POLLHUP) {
 			this->request_disconnect(i);
@@ -184,13 +170,13 @@ void Server::poll()
 	}
 }
 
-void Server::request_disconnect(size_t user_index)
+void	Server::request_disconnect(size_t user_index)
 {
 	User *user = this->_users[user_index];
 	this->_disconnect_requests.push_back(user);
 }
 
-void Server::disconnect(size_t user_index)
+void	Server::disconnect(size_t user_index)
 {
 	User *user = this->_users[user_index];
 
@@ -204,16 +190,16 @@ void Server::disconnect(size_t user_index)
 		(*it)->remove_user(user);
 	}
 
-	std::cout << user->host() << ":" << user->port() << " has lost connection" << std::endl;
+	std::cout << user->host() << ":" << user->port() << YEL " has lost connection" COLOR_RESET << std::endl;
 	this->_users[user_index]->disconnect();
 	delete this->_users[user_index];
 	this->_users.erase(this->_users.begin() + user_index);
 	this->_pollfds.erase(this->_pollfds.begin() + user_index);
 }
 
-void Server::process_message(User& sender, const std::string& message)
+void	Server::process_message(User& sender, const std::string& message)
 {
-	std::cout << "\e[0;32mCLIENT\e[0m " << message << std::endl;
+	std::cout << GRN "CLIENT " COLOR_RESET << message << std::endl;
 
 	std::string command;
 	std::vector<std::string> params;
@@ -230,11 +216,11 @@ void Server::process_message(User& sender, const std::string& message)
 	std::transform(command.begin(), command.end(), command.begin(), ::toupper);
 
 	if (command.empty()) {
-		std::cerr << "WARNING: Empty message";
+		std::cerr << RED "WARNING: Empty message" COLOR_RESET << std::endl;
 		return ;
 	}
 	if (::strstr(&command[0], ":")) {
-		std::cerr << "WARNING: Invalid message (colon in command)";
+		std::cerr << RED "WARNING: Invalid message (colon in command)" COLOR_RESET << std::endl;
 		return ;
 	}
 
@@ -242,8 +228,12 @@ void Server::process_message(User& sender, const std::string& message)
 	try {
 		cmd = this->_commands.at(command);
 		cmd->execute(&sender, msg);
-	} catch (std::exception& e) {
-		(void)e;
+	} catch (std::exception&) {
+		for (std::vector<std::string>::iterator it = this->_ignored_commands.begin(); it != this->_ignored_commands.end(); ++it) {
+			if (command == *it) {
+				return ;
+			}
+		}
 		this->send_error(sender, ERR_UNKNOWNCOMMAND(command));
 		return ;
 	} catch (const std::string& err) {
@@ -252,36 +242,10 @@ void Server::process_message(User& sender, const std::string& message)
 	}
 }
 
-void Server::send_error(User& user, const std::string& err)
-{
-	user.send(err);
-	// std::cerr << "Unhandled error to " << user.host() << ":" << user.port() << ": " << err << std::endl;
-}
-
-int	 Server::find_user_index(const User& user)
+int		Server::find_user_index(const User& user)
 {
 	for (size_t i = 0; i < this->_users.size(); ++i) {
 		if (this->_users[i]->socket() == user.socket()) {
-			return i;
-		}
-	}
-	return -1;
-}
-
-int	 Server::find_user_username(const std::string& username) const
-{
-	for (size_t i = 0; i < this->_users.size(); ++i) {
-		if (this->_users[i]->username() == username) {
-			return i;
-		}
-	}
-	return -1;
-}
-
-int	 Server::find_user_nick(const std::string& nick) const
-{
-	for (size_t i = 0; i < this->_users.size(); ++i) {
-		if (this->_users[i]->nick() == nick) {
 			return i;
 		}
 	}
@@ -318,80 +282,36 @@ size_t	Server::user_count(void) const
 	return count;
 }
 
-void Server::parse_message(const std::string& message, std::string& command, std::vector<std::string>& params)
+Channel*	Server::get_channel(const std::string& name)
 {
-	const char *str = &message[0]; /* FIXME: unused */
-	command.clear();
-	params.clear();
-
-	std::vector<std::string> space_segments;
-	std::vector<std::string> colon_segments;
-
-	std::stringstream stream0(message);
-	std::stringstream stream1(message);
-	std::string segment;
-
-	bool first = true;
-	while(std::getline(stream0, segment, ' '))
-	{
-		if (first) {
-			command = segment;
-			first = false;
-			continue ;
-		}
-		space_segments.push_back(segment);
+	try {
+		return this->_channels.at(name);
 	}
-
-	if (space_segments.empty() && command.empty()) {
-		throw std::string("empty command");
-	}
-
-	if (std::strstr(&command[0], ":")) {
-		throw std::string("cannot have colons in command name");
-	}
-
-	while(std::getline(stream1, segment, ':'))
-	{
-		colon_segments.push_back(segment);
-	}
-
-	for (std::vector<std::string>::const_iterator it = space_segments.begin(); it != space_segments.end(); ++it) {
-		if (std::strstr(&(*it)[0], ":")) {
-			if ((*it)[0] != ':') {
-				throw std::string("colon in middle of argument");
-			}
-			break ;
-		}
-		params.push_back(*it);
-	}
-
-	for (std::vector<std::string>::const_iterator it = colon_segments.begin(); it != colon_segments.end(); ++it) {
-		if (it == colon_segments.begin()) {
-			continue ;
-		}
-		if (it->empty()) {
-			throw std::string("two colons not separated by space");
-		}
-		if ((*it)[it->size() - 1] != ' ') {
-			if (it != (colon_segments.end() - 1)) {
-				throw std::string("no space before colon");
-			}
-		}
-		params.push_back(*it);
-	}
-
-	for (size_t i = 0; i < params.size(); ++i) {
-		std::cout << params[i] << std::endl;
+	catch (std::exception &e) {
+		(void)e;
+		throw ERR_NOSUCHCHANNEL(name);
 	}
 }
 
 void	Server::create_channel(User *creator, const std::string& channel_name, const std::string& key)
 {
 	if (key.empty()) {
+		std::cout << YEL "Creating channel " COLOR_RESET << channel_name << YEL "... " COLOR_RESET;
 		this->_channels[channel_name] = new Channel(creator, channel_name, this);
 	} else {
+		std::cout << YEL "Creating channel " COLOR_RESET << channel_name << YEL " with key... " COLOR_RESET;
 		this->_channels[channel_name] = new Channel(creator, channel_name, key, this);
 	}
+}
+
+void	Server::remove_channel(const std::string& name)
+{
+	try {
+		std::map<std::string, Channel *>::iterator channel = this->_channels.find(name);
+		delete channel->second;
+		this->_channels.erase(channel);
+	}
+	catch(const std::exception&) {	}
 }
 
 void	Server::join_channel(User *user, const std::string& channel_name, const std::string& key)
@@ -428,27 +348,6 @@ void	Server::join_channel(User *user, const std::string& channel_name, const std
 
 	user->send(RPL_NAMREPLY(nick, channel_name, channel->list_users()));
 	user->send(RPL_ENDOFNAMES(nick, channel_name));
-}
-
-void		Server::remove_channel(const std::string& name)
-{
-	try {
-		std::map<std::string, Channel *>::iterator channel = this->_channels.find(name);
-		delete channel->second;
-		this->_channels.erase(channel);
-	}
-	catch(const std::exception&) {	}
-}
-
-Channel*	Server::get_channel(const std::string& name)
-{
-	try {
-		return this->_channels.at(name);
-	}
-	catch (std::exception &e) {
-		(void)e;
-		throw ERR_NOSUCHCHANNEL(name);
-	}
 }
 
 size_t	Server::channel_count(void) const
@@ -496,6 +395,54 @@ void	Server::print_debug(User *sender) const
 	if (this->_channels.size()) {
 		sender->send(channel_list);
 	}
+}
+
+int		Server::find_user_username(const std::string& username) const
+{
+	for (size_t i = 0; i < this->_users.size(); ++i) {
+		if (this->_users[i]->username() == username) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+int		Server::find_user_nick(const std::string& nick) const
+{
+	for (size_t i = 0; i < this->_users.size(); ++i) {
+		if (this->_users[i]->nick() == nick) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+void	Server::setup_commands()
+{
+	this->_commands["DEBUG"] = new cmd::Debug(*this);
+
+	this->_commands["HELP"] = new cmd::Help(*this);
+	this->_commands["JOIN"] = new cmd::Join(*this);
+	this->_commands["MODE"] = new cmd::Mode(*this);
+	this->_commands["NICK"] = new cmd::Nick(*this);
+	this->_commands["PART"] = new cmd::Part(*this);
+	this->_commands["PASS"] = new cmd::Pass(*this);
+	this->_commands["PING"] = new cmd::Ping(*this);
+	this->_commands["PRIVMSG"] = new cmd::Privmsg(*this);
+	this->_commands["QUIT"] = new cmd::Quit(*this);
+	this->_commands["USER"] = new cmd::User(*this);
+}
+
+void	Server::setup_ignored_commands()
+{
+	this->_ignored_commands.push_back("CAP");
+	this->_ignored_commands.push_back("WHO");
+	this->_ignored_commands.push_back("USERHOST");
+}
+
+void	Server::send_error(User& user, const std::string& err)
+{
+	user.send(err);
 }
 
 }

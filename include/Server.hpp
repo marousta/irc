@@ -18,6 +18,7 @@ class Server {
 		std::vector<User *> 						_users;
 		std::vector<struct pollfd>					_pollfds;
 		std::map<std::string, Command *>			_commands;
+		std::vector<std::string>					_ignored_commands;
 		std::map<std::string, Channel *>			_channels;
 		std::vector<User *>							_disconnect_requests;
 		int											_socket;
@@ -39,12 +40,11 @@ class Server {
 		User*	get_user_nick(const std::string& nick) const;
 		size_t	user_count(void) const;
 
-		void		create_channel(User *creator, const std::string& name, const std::string& key = "");
-		void		delete_channel();
-		void		join_channel(User *user, const std::string& name, const std::string& key = "");
 		Channel*	get_channel(const std::string& name);
-		size_t		channel_count(void) const;
+		void		create_channel(User *creator, const std::string& name, const std::string& key = "");
 		void		remove_channel(const std::string& name);
+		void		join_channel(User *user, const std::string& name, const std::string& key = "");
+		size_t		channel_count(void) const;
 
 		void	print_debug(User *sender) const;
 
@@ -52,8 +52,8 @@ class Server {
 		int		find_user_username(const std::string& username) const;
 		int		find_user_nick(const std::string& nick) const;
 
-		void 	parse_message(const std::string& message, std::string& command, std::vector<std::string>& params);
 		void 	setup_commands();
+		void 	setup_ignored_commands();
 		void 	send_error(User& user, const std::string& err);
 };
 
