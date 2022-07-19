@@ -49,9 +49,6 @@ void	Mode::parse(const std::string& msg)
 		++mg;
 	}
 
-	if (!*mg) {
-		throw ERR_NEEDMOREPARAMS(this->_name);
-	}
 	this->_arg = mg;
 }
 

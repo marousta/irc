@@ -353,6 +353,18 @@ size_t	Server::channel_count(void) const
 	return this->_channels.size();
 }
 
+std::vector<Channel *> 	Server::get_channels_with_user(User *user)
+{
+	std::vector<Channel *> ret;
+
+	for (std::map<std::string, Channel *>::iterator it = this->_channels.begin(); it != this->_channels.end(); ++it) {
+		if (it->second->user_exist(user)) {
+			ret.push_back(it->second);
+		}
+	}
+	return ret;
+}
+
 void	Server::print_debug(User *sender) const
 {
 	if (this->_pass.size()) {
