@@ -14,40 +14,33 @@ Privmsg::Privmsg(ft::Server& server)
 
 void	Privmsg::parse(const std::string& msg)
 {
-	const char *mg = &msg[0];
-	std::string targets;
-
-	while (*mg && *mg != ' ') {
-		targets += *mg++;
-	}
-	if (!*mg) {
-		throw ERR_NEEDMOREPARAMS(this->_name);
-	}
-
-	std::string parsed;
-	std::stringstream str(targets);
-
 	this->_channels.clear();
 	this->_users.clear();
-	while (std::getline(str, parsed, ',')) {
-		if (parsed[0] == '#') {
-			this->_channels.push_back(parsed);
-		} else {
-			this->_users.push_back(parsed);
-		}
-	}
+	this->_text.clear();
 
+	const char *mg = &msg[0];
+
+	std::string first;
+	while (*mg && *mg != ' ') {
+		first += *mg++;
+	}
 	while (*mg == ' ') {
 		++mg;
 	}
 
-	if (*mg != ':') {
-		throw ERR_NEEDMOREPARAMS(this->_name);
+	if (*mg == ':') {
+		++mg;
 	}
-	++mg;
 
-	if (::strstr(mg, ":")) {
-		throw ERR_NEEDMOREPARAMS(this->_name);
+	std::string parsed;
+	std::stringstream str(first);
+
+	while (std::getline(str, parsed, ',')) {
+		if (parsed[0] == '#') {
+			this->_channels.push_back(parsed);
+			continue ;
+		}
+		this->_users.push_back(parsed);
 	}
 
 	this->_text = mg;
