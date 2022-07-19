@@ -44,6 +44,7 @@ class Server {
 		void		join_channel(User *user, const std::string& name, const std::string& key = "");
 		Channel*	get_channel(const std::string& name);
 		size_t		channel_count(void) const;
+		void		remove_channel(const std::string& name);
 
 		void	print_debug(User *sender) const;
 

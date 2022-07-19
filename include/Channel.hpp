@@ -10,6 +10,7 @@
 
 namespace ft {
 
+class Server;
 class User;
 
 class Channel {
@@ -20,10 +21,11 @@ class Channel {
 		std::string			_topic;
 		std::vector<User *>	_users;
 		std::vector<User *>	_operators;
+		Server				*_server;
 
 	public:
-		Channel(User *creator, std::string name);
-		Channel(User *creator, std::string name, std::string key);
+		Channel(User *creator, std::string name, Server *server);
+		Channel(User *creator, std::string name, std::string key, Server *server);
 		~Channel();
 
 		short	mode(void) const;
