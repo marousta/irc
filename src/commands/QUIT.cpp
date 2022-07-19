@@ -27,7 +27,7 @@ void	Quit::execute(ft::User *sender, const std::string& msg)
 
 	int i = this->_server.find_user_index(*sender);
 	if (i >= 0) {
-		this->_server.disconnect(i);
+		this->_server.request_disconnect(i);
 	} else {
 		std::cerr << "WARNING: User quit but was not connected. This should NOT happen" << std::endl;
 	}

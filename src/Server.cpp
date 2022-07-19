@@ -95,6 +95,18 @@ void Server::poll()
 		FIXME: malloc(): unaligned tcache chunk detected
 		zsh: IOT instruction (core dumped)  ./ircserv
 	*/
+	for (	std::vector<User *>::const_iterator it = this->_disconnect_requests.begin();
+			it != this->_disconnect_requests.end();
+			++it)
+	{
+		int index = this->find_user_index(**it);
+		if (index >= 0) {
+			this->disconnect(index);
+		}
+	}
+
+	this->_disconnect_requests.clear();
+
 	for (size_t i = 0; i < this->_pollfds.size(); ++i) {
 		struct pollfd&	pfd = this->_pollfds[i];
 		User			*user = this->_users[i];
@@ -142,7 +154,7 @@ void Server::poll()
 				}
 				user->append_to_message(buf);
 			} else {
-				this->disconnect(i);
+				this->request_disconnect(i);
 				if (i-- == 0) {
 					break ;
 				}
@@ -155,7 +167,7 @@ void Server::poll()
 			}
 			std::string message = user->response_queue_pop();
 			if (::send(user->socket(), &message[0], message.size(), 0) < 0) {
-				this->disconnect(i);
+				this->request_disconnect(i);
 				if (i-- == 0) {
 					break ;
 				}
@@ -164,12 +176,18 @@ void Server::poll()
 			std::cout << "\e[0;34mSERVER\e[0m " << message;
 		}
 		if (pfd.revents & POLLHUP) {
-			this->disconnect(i);
+			this->request_disconnect(i);
 			if (i-- == 0) {
 				break ;
 			}
 		}
 	}
+}
+
+void Server::request_disconnect(size_t user_index)
+{
+	User *user = this->_users[user_index];
+	this->_disconnect_requests.push_back(user);
 }
 
 void Server::disconnect(size_t user_index)
