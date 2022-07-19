@@ -75,7 +75,10 @@ std::vector< std::pair<std::string, std::string> > _channels;
 CLASS_COMMAND_END();
 
 CLASS_COMMAND_BEGIN(Mode);
-std::vector<std::string> _args;
+std::string _target;
+short _mode;
+char _operation;
+std::string _args;
 CLASS_COMMAND_END();
 
 CLASS_COMMAND_BEGIN(Nick);

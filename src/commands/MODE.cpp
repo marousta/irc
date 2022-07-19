@@ -12,13 +12,49 @@ Mode::Mode(ft::Server& server)
 
 void	Mode::parse(const std::string& msg)
 {
+	this->_target.clear();
+	this->_mode = 0;
+	this->_operation = '\0';
 	this->_args.clear();
-	std::stringstream str(msg);
-	std::string parsed;
 
-	while (std::getline(str, parsed, ' ')) {
-		this->_args.push_back(parsed);
+	const char *mg = &msg[0];
+
+	while (*mg && *mg != ' ') {
+		this->_target += *mg++;
 	}
+	while (*mg == ' ') {
+		++mg;
+	}
+	if (!*mg) {
+		return ;
+	}
+
+	std::string modestring;
+	while (*mg && *mg != ' ') {
+		modestring += *mg++;
+	}
+
+	if (modestring.size() != 2 || (modestring[0] != '+' && modestring[0] != '-')) {
+		throw ERR_NEEDMOREPARAMS(this->_name);
+	}
+
+	this->_operation = modestring[0];
+
+	if (modestring[1] == 'k') this->_mode = MODE_K;
+	if (modestring[1] == 't') this->_mode = MODE_T;
+
+	while (*mg == ' ') {
+		++mg;
+	}
+
+	if (*mg == ':') {
+		++mg;
+	}
+
+	if (!*mg) {
+		throw ERR_NEEDMOREPARAMS(this->_name);
+	}
+	this->_args = mg;
 }
 
 void	Mode::execute(ft::User *sender, const std::string& msg)

@@ -59,12 +59,9 @@ void	User::parse(const std::string& msg)
 		++mg;
 	}
 
-	/* TODO: Handle if the full name is a single word ?*/
-	if (*mg != ':') {
-		throw ERR_NEEDMOREPARAMS(this->_name);
+	if (*mg == ':') {
+		++mg;
 	}
-
-	++mg;
 
 	while (*mg) {
 		if (*mg == ':') {

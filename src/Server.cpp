@@ -438,6 +438,7 @@ void	Server::setup_ignored_commands()
 	this->_ignored_commands.push_back("CAP");
 	this->_ignored_commands.push_back("WHO");
 	this->_ignored_commands.push_back("USERHOST");
+	this->_ignored_commands.push_back("PONG");
 }
 
 void	Server::send_error(User& user, const std::string& err)
