@@ -1,3 +1,4 @@
+#include "Server.hpp"
 #include "User.hpp"
 #include "Commands.hpp"
 
@@ -45,7 +46,22 @@ void	Part::execute(ft::User *sender, const std::string& msg)
 
 	this->parse(msg);
 
-	//TODO
+	for (size_t i = 0; i < this->_channels.size(); ++i) {
+		Channel *channel;
+		try {
+			channel = this->_server.get_channel(this->_channels[i]);
+		} catch (const std::string& err) {
+			sender->send(err);
+			continue ;
+		}
+		if (!channel->user_exist(sender)) {
+			sender->send(ERR_NOTONCHANNEL(channel->name()));
+			continue ;
+		} else {
+			channel->dispatch_message(NULL, PART(sender->nick(), sender->username(), channel->name(), this->_reason));
+			channel->remove_user(sender);
+		}
+	}
 }
 
 }}

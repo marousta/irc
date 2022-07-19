@@ -28,6 +28,7 @@ class Channel {
 		Channel(User *creator, std::string name, std::string key, Server *server);
 		~Channel();
 
+		const std::string& name() const;
 		short	mode(void) const;
 		void	mode(short mode);
 		void	unset_mode(short mode);
@@ -49,6 +50,7 @@ class Channel {
 		bool	check_operator(User *user) const;
 
 		void	dispatch_message(User *sender, std::string message);
+
 
 	private:
 		void	update_users_list(User *sender) const;

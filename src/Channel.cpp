@@ -29,6 +29,11 @@ Channel::~Channel()
 	std::cout << GRN "OK" COLOR_RESET << std::endl;
 }
 
+const std::string& Channel::name() const
+{
+	return this->_name;
+}
+
 short	Channel::mode(void) const
 {
 	return this->_mode;
@@ -153,7 +158,7 @@ bool	Channel::check_operator(User *user) const
 void	Channel::dispatch_message(User *sender, std::string message)
 {
 	for (std::vector<User *>::iterator user = this->_users.begin(); user != this->_users.end(); ++user) {
-		if ((*user)->socket() == sender->socket()) {
+		if (sender && (*user)->socket() == sender->socket()) {
 			continue;
 		}
 		(*user)->send(message);

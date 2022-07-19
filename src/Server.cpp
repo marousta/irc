@@ -334,8 +334,6 @@ void	Server::join_channel(User *user, const std::string& channel_name, const std
 		this->create_channel(user, channel_name, key);
 	}
 
-	/* FIXME: segfault when joining from ref Client */
-	/* TODO: below is temporary */
 	std::string nick = user->nick();
 	user->send(JOIN(nick, user->username(), channel_name));
 
