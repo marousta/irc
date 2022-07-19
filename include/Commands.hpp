@@ -76,9 +76,9 @@ CLASS_COMMAND_END();
 
 CLASS_COMMAND_BEGIN(Mode);
 std::string _target;
-short _mode;
+char _mode;
 char _operation;
-std::string _args;
+std::string _arg;
 CLASS_COMMAND_END();
 
 CLASS_COMMAND_BEGIN(Nick);
