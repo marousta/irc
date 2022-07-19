@@ -95,6 +95,18 @@ void Server::poll()
 		FIXME: malloc(): unaligned tcache chunk detected
 		zsh: IOT instruction (core dumped)  ./ircserv
 	*/
+	for (	std::vector<User *>::const_iterator it = this->_disconnect_requests.begin();
+			it != this->_disconnect_requests.end();
+			++it)
+	{
+		int index = this->find_user_index(**it);
+		if (index >= 0) {
+			this->disconnect(index);
+		}
+	}
+
+	this->_disconnect_requests.clear();
+
 	for (size_t i = 0; i < this->_pollfds.size(); ++i) {
 		struct pollfd&	pfd = this->_pollfds[i];
 		User			*user = this->_users[i];
@@ -142,7 +154,7 @@ void Server::poll()
 				}
 				user->append_to_message(buf);
 			} else {
-				this->disconnect(i);
+				this->request_disconnect(i);
 				if (i-- == 0) {
 					break ;
 				}
@@ -155,7 +167,7 @@ void Server::poll()
 			}
 			std::string message = user->response_queue_pop();
 			if (::send(user->socket(), &message[0], message.size(), 0) < 0) {
-				this->disconnect(i);
+				this->request_disconnect(i);
 				if (i-- == 0) {
 					break ;
 				}
@@ -164,7 +176,7 @@ void Server::poll()
 			std::cout << "\e[0;34mSERVER\e[0m " << message;
 		}
 		if (pfd.revents & POLLHUP) {
-			this->disconnect(i);
+			this->request_disconnect(i);
 			if (i-- == 0) {
 				break ;
 			}
@@ -172,9 +184,26 @@ void Server::poll()
 	}
 }
 
+void Server::request_disconnect(size_t user_index)
+{
+	User *user = this->_users[user_index];
+	this->_disconnect_requests.push_back(user);
+}
+
 void Server::disconnect(size_t user_index)
 {
-	const User *user = this->_users[user_index];
+	User *user = this->_users[user_index];
+
+	std::vector<Channel *> channels;
+
+	for (std::map<std::string, Channel *>::iterator it = this->_channels.begin(); it != this->_channels.end(); ++it) {
+		channels.push_back(it->second);
+	}
+
+	for (std::vector<Channel *>::iterator it = channels.begin(); it != channels.end(); ++it) {
+		(*it)->remove_user(user);
+	}
+
 	std::cout << user->host() << ":" << user->port() << " has lost connection" << std::endl;
 	this->_users[user_index]->disconnect();
 	delete this->_users[user_index];
@@ -359,9 +388,9 @@ void Server::parse_message(const std::string& message, std::string& command, std
 void	Server::create_channel(User *creator, const std::string& channel_name, const std::string& key)
 {
 	if (key.empty()) {
-		this->_channels[channel_name] = new Channel(creator, channel_name);
+		this->_channels[channel_name] = new Channel(creator, channel_name, this);
 	} else {
-		this->_channels[channel_name] = new Channel(creator, channel_name, key);
+		this->_channels[channel_name] = new Channel(creator, channel_name, key, this);
 	}
 }
 
@@ -399,6 +428,16 @@ void	Server::join_channel(User *user, const std::string& channel_name, const std
 
 	user->send(RPL_NAMREPLY(nick, channel_name, channel->list_users()));
 	user->send(RPL_ENDOFNAMES(nick, channel_name));
+}
+
+void		Server::remove_channel(const std::string& name)
+{
+	try {
+		std::map<std::string, Channel *>::iterator channel = this->_channels.find(name);
+		delete channel->second;
+		this->_channels.erase(channel);
+	}
+	catch(const std::exception&) {	}
 }
 
 Channel*	Server::get_channel(const std::string& name)

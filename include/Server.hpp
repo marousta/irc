@@ -19,6 +19,7 @@ class Server {
 		std::vector<struct pollfd>					_pollfds;
 		std::map<std::string, Command *>			_commands;
 		std::map<std::string, Channel *>			_channels;
+		std::vector<User *>							_disconnect_requests;
 		int											_socket;
 
 	public:
@@ -28,6 +29,7 @@ class Server {
 		bool	check_pass(std::string pass) const;
 
 		void	poll();
+		void	request_disconnect(size_t user_index);
 		void	disconnect(size_t user_index);
 
 		void	process_message(User& sender, const std::string& message);
@@ -42,6 +44,7 @@ class Server {
 		void		join_channel(User *user, const std::string& name, const std::string& key = "");
 		Channel*	get_channel(const std::string& name);
 		size_t		channel_count(void) const;
+		void		remove_channel(const std::string& name);
 
 		void	print_debug(User *sender) const;
 

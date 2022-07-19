@@ -2,20 +2,21 @@
 
 #include "Errors.hpp"
 #include "Channel.hpp"
+#include "Server.hpp"
 #include "User.hpp"
 
 namespace ft {
 
-Channel::Channel(User *creator, std::string name)
-	: _name(name), _mode(MODE_DEFAULT), _key(""), _topic("")
+Channel::Channel(User *creator, std::string name, Server *server)
+	: _name(name), _mode(MODE_DEFAULT), _key(""), _topic(""), _server(server)
 {
 	this->add_user(creator);
 	this->add_operator(creator);
 	std::cout << "Channel " << this->_name << " created." << std::endl;
 }
 
-Channel::Channel(User *creator, std::string name, std::string key)
-	: _name(name), _mode(MODE_K), _key(key), _topic("")
+Channel::Channel(User *creator, std::string name, std::string key, Server *server)
+	: _name(name), _mode(MODE_K), _key(key), _topic(""), _server(server)
 {
 	this->add_user(creator);
 	this->add_operator(creator);
@@ -86,10 +87,14 @@ void	Channel::add_user(User *user)
 void	Channel::remove_user(User *user)
 {
 	std::vector<User *>::iterator it = this->find_user(user);
-	if (it == this->_users.end()) {
-		throw; /* TODO: error user not found */
+	if (it != this->_users.end()) {
+		this->_users.erase(it);
 	}
-	this->_users.erase(it);
+
+	if (this->_users.empty()) {
+		std::cerr << "DEBUG::::::::: Removing channel '" << this->_name << "'" << std::endl;
+		this->_server->remove_channel(this->_name);
+	}
 }
 
 bool	Channel::user_exist(User *user)
