@@ -55,6 +55,8 @@ class Command {
 		Command(ft::Server& serv, std::string name, std::string desc);
 		virtual ~Command();
 
+		std::string		name() const;
+		std::string		description() const;
 		virtual void	execute(ft::User *sender, const std::string& msg) = 0;
 
 	protected:
@@ -68,7 +70,9 @@ void	successfully_registered(ft::User *user, Server *server);
 
 CLASS_COMMAND(Debug);
 
-CLASS_COMMAND(Help);
+CLASS_COMMAND_BEGIN(Help);
+std::string _cmd;
+CLASS_COMMAND_END();
 
 CLASS_COMMAND_BEGIN(Join);
 std::vector< std::pair<std::string, std::string> > _channels;

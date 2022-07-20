@@ -10,6 +10,16 @@ Command::Command(ft::Server& server, std::string name, std::string desc)
 Command::~Command()
 {	}
 
+std::string		Command::name() const
+{
+	return this->_name;
+}
+
+std::string		Command::description() const
+{
+	return this->_description;
+}
+
 void	Command::parse(const std::string&)
 {	}
 

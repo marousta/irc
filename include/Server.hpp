@@ -49,6 +49,8 @@ class Server {
 
 		void	print_debug(User *sender) const;
 
+		std::map<std::string, Command *>	get_commands() const;
+
 	private:
 		int		find_user_username(const std::string& username) const;
 		int		find_user_nick(const std::string& nick) const;

@@ -407,6 +407,11 @@ void	Server::print_debug(User *sender) const
 	}
 }
 
+std::map<std::string, Command *>	Server::get_commands() const
+{
+	return this->_commands;
+}
+
 int		Server::find_user_username(const std::string& username) const
 {
 	for (size_t i = 0; i < this->_users.size(); ++i) {
