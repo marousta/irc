@@ -131,11 +131,13 @@ const std::string	Channel::list_users(void) const
 void	Channel::update_users_list(User *sender) const
 {
 	for (std::vector<User *>::const_iterator user = this->_users.begin(); user != this->_users.end(); ++user) {
-		if (sender && sender->nick() != (*user)->nick()) {
+		if (sender && sender->nick() == (*user)->nick()) {
 			continue ;
 		}
-		(*user)->send(RPL_NAMREPLY((*user)->nick(), this->_name, this->list_users()));
-		(*user)->send(RPL_ENDOFNAMES((*user)->nick(), this->_name));
+		std::cout << YEL << (*user)->nick() << COLOR_RESET << std::endl;
+		(*user)->send(JOIN(sender->nick(), sender->username(), this->_name));
+		// (*user)->send(RPL_NAMREPLY((*user)->nick(), this->_name, this->list_users()));
+		// (*user)->send(RPL_ENDOFNAMES((*user)->nick(), this->_name));
 	}
 }
 
