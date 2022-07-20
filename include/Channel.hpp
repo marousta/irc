@@ -44,7 +44,6 @@ class Channel {
 		bool				user_exist(User *user);
 		const std::string	list_users(void) const;
 		size_t				count_users(void) const;
-		void				update_users_list(User *sender) const;
 
 		void	add_operator(User *op);
 		void	remove_operator(User *op);

@@ -11,7 +11,7 @@ User::User(int socket, const std::string& host, int port, Server *server, bool e
 		_host(host), _nick(""), _username(""), _realname(""),
 		_message(""), _server(server), _response_queue()
 {
-	std::cout << YEL "New connection from " COLOR_RESET << this->_host << ":" << this->_port << YEL " waiting for login and registration" COLOR_RESET << std::endl;
+	std::cout << YEL "New connection from " COLOR_RESET << this->_host << ":" << this->_port << YEL " waiting for login and/or registration" COLOR_RESET << std::endl;
 }
 
 User::User(const User& other)

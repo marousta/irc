@@ -317,19 +317,6 @@ void	Server::join_channel(User *user, const std::string& channel_name, const std
 		(void)e;
 		this->create_channel(user, channel_name, key);
 	}
-
-	std::string nick = user->nick();
-	user->send(JOIN(nick, user->username(), channel_name));
-
-	Channel *channel = this->_channels.at(channel_name);
-	if (channel->mode() & MODE_T) {
-		user->send(RPL_TOPIC(nick, channel_name, channel->topic()));
-	} else {
-		user->send(RPL_NOTOPIC(nick, channel_name));
-	}
-
-	user->send(RPL_NAMREPLY(nick, channel_name, channel->list_users()));
-	user->send(RPL_ENDOFNAMES(nick, channel_name));
 }
 
 size_t	Server::channel_count(void) const

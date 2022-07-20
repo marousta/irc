@@ -91,11 +91,29 @@ void	Channel::add_user(User *user)
 		throw ERR_USERONCHANNEL(user->nick, this->_name);
 	}
 	this->_users.push_back(user);
-	this->update_users_list(user);
+
+	std::string nick = user->nick();
+
+	if (this->_mode & MODE_T) {
+		user->send(RPL_TOPIC(nick, this->_name, this->_topic));
+	} else {
+		user->send(RPL_NOTOPIC(nick, this->_name));
+	}
+
+	user->send(RPL_NAMREPLY(nick, this->_name, this->list_users()));
+	user->send(RPL_ENDOFNAMES(nick, this->_name));
+
+	for (std::vector<User *>::const_iterator it = this->_users.begin(); it != this->_users.end(); ++it) {
+		(*it)->send(JOIN(nick, user->username(), this->_name));
+		(*it)->send(RPL_NAMREPLY(nick, this->_name, this->list_users()));
+		(*it)->send(RPL_ENDOFNAMES(nick, this->_name));
+	}
 }
 
 void	Channel::remove_user(User *user)
 {
+	this->remove_operator(user);
+
 	std::vector<User *>::iterator it = this->find_user(user);
 	if (it != this->_users.end()) {
 		this->_users.erase(it);
@@ -133,19 +151,6 @@ size_t	Channel::count_users(void) const
 	return this->_users.size();
 }
 
-void	Channel::update_users_list(User *sender) const
-{
-	for (std::vector<User *>::const_iterator user = this->_users.begin(); user != this->_users.end(); ++user) {
-		if (sender && sender->nick() == (*user)->nick()) {
-			continue ;
-		}
-		std::cout << YEL << (*user)->nick() << COLOR_RESET << std::endl;
-		(*user)->send(JOIN(sender->nick(), sender->username(), this->_name));
-		// (*user)->send(RPL_NAMREPLY((*user)->nick(), this->_name, this->list_users()));
-		// (*user)->send(RPL_ENDOFNAMES((*user)->nick(), this->_name));
-	}
-}
-
 void	Channel::add_operator(User *op)
 {
 	std::vector<User *>::iterator it = this->find_operator(op);
@@ -159,10 +164,9 @@ void	Channel::add_operator(User *op)
 void	Channel::remove_operator(User *op)
 {
 	std::vector<User *>::iterator it = this->find_operator(op);
-	if (it == this->_operators.end()) {
-		throw ERR_CHANOPRIVSNEEDED(this->_name);
+	if (it != this->_operators.end()) {
+		this->_operators.erase(it);
 	}
-	this->_operators.erase(it);
 }
 
 bool	Channel::check_operator(User *user) const
