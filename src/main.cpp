@@ -78,4 +78,5 @@ int	main(int ac, char **av)
 	}
 
 	delete server;
+	server = NULL;
 }

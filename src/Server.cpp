@@ -57,12 +57,15 @@ Server::~Server()
 {
 	for (size_t i = 0; i < this->_users.size(); ++i) {
 		delete this->_users[i];
+		this->_users[i] = NULL;
 	}
 	for (std::map<std::string, Command *>::iterator it = this->_commands.begin(); it != this->_commands.end(); ++it) {
 		delete it->second;
+		it->second = NULL;
 	}
 	for (std::map<std::string, Channel *>::iterator it = this->_channels.begin(); it != this->_channels.end(); ++it) {
 		delete it->second;
+		it->second = NULL;
 	}
 	::close(this->_socket);
 }
@@ -188,6 +191,7 @@ void	Server::disconnect(size_t user_index)
 	std::cout << user->host() << ":" << user->port() << YEL " has lost connection" COLOR_RESET << std::endl;
 	this->_users[user_index]->disconnect();
 	delete this->_users[user_index];
+	this->_users[user_index] = NULL;
 	this->_users.erase(this->_users.begin() + user_index);
 	this->_pollfds.erase(this->_pollfds.begin() + user_index);
 }
@@ -293,6 +297,7 @@ void	Server::remove_channel(const std::string& name)
 	try {
 		std::map<std::string, Channel *>::iterator channel = this->_channels.find(name);
 		delete channel->second;
+		channel->second = NULL;
 		this->_channels.erase(channel);
 	}
 	catch(const std::exception&) {	}
