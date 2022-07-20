@@ -40,10 +40,10 @@ class Server {
 		User*	get_user_nick(const std::string& nick) const;
 		size_t	user_count(void) const;
 
-		void					create_channel(User *creator, const std::string& name, const std::string& key = "");
-		void					remove_channel(const std::string& name);
-		void					join_channel(User *user, const std::string& name, const std::string& key = "");
-		size_t					channel_count(void) const;
+		void	create_channel(User *creator, const std::string& name, const std::string& key = "");
+		void	remove_channel(const std::string& name);
+		void	join_channel(User *user, const std::string& name, const std::string& key = "");
+		size_t	channel_count(void) const;
 
 		Channel*				get_channel_with_name(const std::string& name);
 		std::vector<Channel *> 	get_channels() const;

@@ -1,5 +1,7 @@
 #pragma once
 
+//TODO: Check if username is used instead of nick on Replies and Errors
+
 #define SERVER_NAME				"servername"
 #define SERVER_VER				"ft_irc"
 #define SERVER_PREFIX			"(o)~"

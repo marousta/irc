@@ -64,7 +64,6 @@ void	Nick::execute(ft::User *sender, const std::string& msg)
 		throw ERR_NICKNAMEINUSE(this->_nick);
 	}
 
-	//TODO: sender->update_nick(); -> annonce to all channels
 	std::string old_nick = sender->nick();
 	sender->nick(this->_nick);
 
@@ -77,7 +76,6 @@ void	Nick::execute(ft::User *sender, const std::string& msg)
 		std::vector<Channel *> channels = this->_server.get_channels_with_user(sender);
 		for (std::vector<Channel *>::iterator channel = channels.begin(); channel != channels.end(); ++channel) {
 			(*channel)->dispatch_message(NULL, NICK(sender->username(), old_nick, sender->nick()));
-			// (*channel)->update_users_list(NULL);
 		}
 
 		sender->send(RPL_WELCOME(sender->nick(), sender->username()));

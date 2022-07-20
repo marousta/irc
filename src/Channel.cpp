@@ -150,7 +150,8 @@ void	Channel::add_operator(User *op)
 {
 	std::vector<User *>::iterator it = this->find_operator(op);
 	if (it != this->_operators.end()) {
-		throw; /* TODO: error op already operator */
+		std::cout << RED << op->nick() << " is already an operator. THIS SHOULD NOT HAPPEN !" COLOR_RESET << std::endl;
+		return ;
 	}
 	this->_operators.push_back(op);
 }
@@ -159,7 +160,7 @@ void	Channel::remove_operator(User *op)
 {
 	std::vector<User *>::iterator it = this->find_operator(op);
 	if (it == this->_operators.end()) {
-		throw; /* TODO: error op not found */
+		throw ERR_CHANOPRIVSNEEDED(this->_name);
 	}
 	this->_operators.erase(it);
 }

@@ -77,10 +77,6 @@ bool	Server::check_pass(std::string pass) const
 
 void	Server::poll()
 {
-	/*
-		FIXME: malloc(): unaligned tcache chunk detected
-		zsh: IOT instruction (core dumped)  ./ircserv
-	*/
 	for (	std::vector<User *>::const_iterator it = this->_disconnect_requests.begin();
 			it != this->_disconnect_requests.end();
 			++it)
@@ -148,7 +144,6 @@ void	Server::poll()
 		}
 		if (pfd.revents & POLLOUT) {
 			if (user->response_queue_size() == 0) {
-				/* TODO: Should not happen, but if it happens it is VERY concerning */
 				std::cerr << RED "WARNING: user response queue is empty. THIS SHOULD NOT HAPPEN !" COLOR_RESET << std::endl;
 			}
 			std::string message = user->response_queue_pop();

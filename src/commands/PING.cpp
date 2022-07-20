@@ -23,8 +23,7 @@ void	Ping::execute(ft::User *sender, const std::string& msg)
 	}
 
 	this->parse(msg);
-	//TODO: Ping is more complex
-	//TODO: Check if user is registered ?
+	//TODO: Ping is more complex, do NOTICE
 	sender->send("PONG " + msg);
 }
 
