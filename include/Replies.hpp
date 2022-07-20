@@ -42,6 +42,7 @@
 #define RPL_ENDOFBANLIST(nick, channel_name)					std::string(":") + SERVER_NAME + " 368 " + nick + " " + channel_name + " :End of channel ban list"
 
 #define JOIN(nick, username, channel_name)						std::string(":") + username + "!~" + nick + " JOIN :" + channel_name
-#define PRIVMSG(nick, to, text)									std::string(":") + nick + " PRIVMSG " + to + " :" + text
-#define PART(nick, username, channel_name, reason)				std::string(":") + username + "!~" + nick + " PART " + channel_name + " :" + reason
 #define NICK(old_nick, username, new_nick)						std::string(":") + username + "!~" + old_nick + " NICK :" + new_nick
+#define PART(nick, username, channel_name, reason)				std::string(":") + username + "!~" + nick + " PART " + channel_name + " :" + reason
+#define PRIVMSG(nick, to, text)									std::string(":") + nick + " PRIVMSG " + to + " :" + text
+#define TOPIC(nick, username, channel_name, topic)				std::string(":") + username + "!~" + nick + " TOPIC " + channel_name + " :" + topic

@@ -70,14 +70,12 @@ void	Mode::execute(ft::User *sender, const std::string& msg)
 	if (this->_operation == '+') {
 		switch (this->_mode)
 		{
-			case 't': channel->topic(this->_arg); break;
 			case 'k': channel->key(this->_arg); break;
 			default: throw ERR_INVALIDMODEPARAM(this->_target, this->_operation + this->_mode, "");
 		}
 	} else if (this->_operation == '-') {
 		switch (this->_mode)
 		{
-			case 't': channel->topic(""); break;
 			case 'k': channel->key(""); break;
 			default: throw ERR_INVALIDMODEPARAM(this->_target, this->_operation + this->_mode, "");
 		}

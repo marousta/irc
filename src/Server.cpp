@@ -440,6 +440,7 @@ void	Server::setup_commands()
 	this->_commands["PING"] = new cmd::Ping(*this);
 	this->_commands["PRIVMSG"] = new cmd::Privmsg(*this);
 	this->_commands["QUIT"] = new cmd::Quit(*this);
+	this->_commands["TOPIC"] = new cmd::Topic(*this);
 	this->_commands["USER"] = new cmd::User(*this);
 }
 

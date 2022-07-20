@@ -9,7 +9,7 @@
 namespace ft {
 
 Channel::Channel(User *creator, std::string name, Server *server)
-	: _name(name), _mode(MODE_DEFAULT), _key(""), _topic(""), _server(server)
+	: _name(name), _mode(MODE_DEFAULT | MODE_T), _key(""), _topic(""), _server(server)
 {
 	this->add_user(creator);
 	this->add_operator(creator);
@@ -17,7 +17,7 @@ Channel::Channel(User *creator, std::string name, Server *server)
 }
 
 Channel::Channel(User *creator, std::string name, std::string key, Server *server)
-	: _name(name), _mode(MODE_K), _key(key), _topic(""), _server(server)
+	: _name(name), _mode(MODE_K | MODE_T), _key(key), _topic(""), _server(server)
 {
 	this->add_user(creator);
 	this->add_operator(creator);

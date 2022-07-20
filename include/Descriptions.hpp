@@ -11,4 +11,5 @@
 #define PING_DESC		std::string("Tests the presence of a connection to a client or server.")
 #define PRIVMSG_DESC	std::string("<target>[,<target>[,...]] <message> Send a <message> to a given <target>, which can be a user or a channel.")
 #define QUIT_DESC		std::string("<reason> Terminate a user session.")
+#define TOPIC_DESC		std::string("<channel> [<topic>] Add or change <channel> topic.")
 #define USER_DESC		std::string("<username> <unused> <unused> :<real name> Used to register")

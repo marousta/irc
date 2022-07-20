@@ -106,6 +106,11 @@ CLASS_COMMAND_BEGIN(Quit);
 std::string _reason;
 CLASS_COMMAND_END();
 
+CLASS_COMMAND_BEGIN(Topic);
+std::string _channel;
+std::string _topic;
+CLASS_COMMAND_END();
+
 CLASS_COMMAND_BEGIN(User);
 std::string _username;
 int _mode;
