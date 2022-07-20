@@ -11,30 +11,37 @@ Part::Part(ft::Server& server)
 
 void	Part::parse(const std::string& msg)
 {
+	this->_channels.clear();
+	this->_reason.clear();
+
 	std::string parsed;
-	std::stringstream str(msg);
 
-	std::vector<std::string> parts;
+	const char *mg = &msg[0];
+	std::string channel_str;
 
-	while (std::getline(str, parsed, ' ')) {
-		parts.push_back(parsed);
+	while (*mg && *mg != ' ') {
+		channel_str += *mg++;
 	}
 
-	if (parts.empty() || (parts.size() > 2)) {
+	if (channel_str.empty()) {
 		throw ERR_NEEDMOREPARAMS(this->_name);
 	}
 
-	std::stringstream channel_str(parts[0]);
-
-	this->_channels.clear();
-	while (std::getline(channel_str, parsed, ',')) {
+	std::stringstream str(channel_str);
+	while (std::getline(str, parsed, ',')) {
 		this->_channels.push_back(parsed);
 	}
 
-	if (parts.size() == 2) {
-		this->_reason = parts[1];
-	} else {
-		this->_reason.clear();
+	while (*mg && *mg == ' ') {
+		++mg;
+	}
+
+	if (*mg == ':') {
+		++mg;
+	}
+
+	if (*mg) {
+		this->_reason = mg;
 	}
 }
 
