@@ -13,11 +13,16 @@ Pass::Pass(ft::Server& server)
 
 void	Pass::parse(const std::string& msg)
 {
-	if (msg.empty() || msg[0] != ':') {
+	if (msg.empty()) {
 		throw ERR_NEEDMOREPARAMS(this->_name);
 	}
 
-	this->_pass = &msg[1];
+	if (msg[0] == ':') {
+		this->_pass = &msg[1];
+	} else {
+		this->_pass = &msg[0];
+	}
+
 }
 
 void	Pass::execute(ft::User *sender, const std::string& msg)

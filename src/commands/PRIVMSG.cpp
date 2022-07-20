@@ -59,7 +59,7 @@ void	Privmsg::execute(ft::User *sender, const std::string& msg)
 
 	for (std::vector<std::string>::iterator channel_name = this->_channels.begin(); channel_name != this->_channels.end(); ++channel_name) {
 		try {
-			Channel *channel = this->_server.get_channel(*channel_name);
+			Channel *channel = this->_server.get_channel_with_name(*channel_name);
 			channel->dispatch_message(sender, PRIVMSG(sender->nick(), *channel_name, this->_text));
 		}
 		catch (std::string& e) {

@@ -65,7 +65,7 @@ void	Mode::execute(ft::User *sender, const std::string& msg)
 		throw ERR_NEEDMOREPARAMS(this->_name);
 	}
 
-	Channel *channel = this->_server.get_channel(this->_target);
+	Channel *channel = this->_server.get_channel_with_name(this->_target);
 
 	if (this->_operation == '+') {
 		switch (this->_mode)

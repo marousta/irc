@@ -78,6 +78,8 @@ CLASS_COMMAND_BEGIN(Join);
 std::vector< std::pair<std::string, std::string> > _channels;
 CLASS_COMMAND_END();
 
+CLASS_COMMAND(List);
+
 CLASS_COMMAND_BEGIN(Mode);
 std::string _target;
 char _mode;

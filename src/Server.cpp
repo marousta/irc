@@ -282,17 +282,6 @@ size_t	Server::user_count(void) const
 	return count;
 }
 
-Channel*	Server::get_channel(const std::string& name)
-{
-	try {
-		return this->_channels.at(name);
-	}
-	catch (std::exception &e) {
-		(void)e;
-		throw ERR_NOSUCHCHANNEL(name);
-	}
-}
-
 void	Server::create_channel(User *creator, const std::string& channel_name, const std::string& key)
 {
 	if (key.empty()) {
@@ -351,6 +340,28 @@ void	Server::join_channel(User *user, const std::string& channel_name, const std
 size_t	Server::channel_count(void) const
 {
 	return this->_channels.size();
+}
+
+
+Channel*	Server::get_channel_with_name(const std::string& name)
+{
+	try {
+		return this->_channels.at(name);
+	}
+	catch (std::exception &e) {
+		(void)e;
+		throw ERR_NOSUCHCHANNEL(name);
+	}
+}
+
+std::vector<Channel *>	Server ::get_channels() const
+{
+	std::vector<Channel *> ret;
+
+	for (std::map<std::string, Channel *>::const_iterator it = this->_channels.begin(); it != this->_channels.end(); ++it) {
+		ret.push_back(it->second);
+	}
+	return ret;
 }
 
 std::vector<Channel *> 	Server::get_channels_with_user(User *user)
@@ -438,6 +449,7 @@ void	Server::setup_commands()
 
 	this->_commands["HELP"] = new cmd::Help(*this);
 	this->_commands["JOIN"] = new cmd::Join(*this);
+	this->_commands["LIST"] = new cmd::List(*this);
 	this->_commands["MODE"] = new cmd::Mode(*this);
 	this->_commands["NICK"] = new cmd::Nick(*this);
 	this->_commands["PART"] = new cmd::Part(*this);

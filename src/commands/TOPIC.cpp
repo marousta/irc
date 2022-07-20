@@ -50,7 +50,7 @@ void	Topic::execute(ft::User *sender, const std::string& msg)
 
 	this->parse(msg);
 
-	Channel *channel = this->_server.get_channel(this->_channel);
+	Channel *channel = this->_server.get_channel_with_name(this->_channel);
 
 	if (this->_topic.empty()) {
 		sender->send(RPL_TOPIC(sender->nick(), this->_channel, channel->topic()));

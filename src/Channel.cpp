@@ -128,6 +128,11 @@ const std::string	Channel::list_users(void) const
 	return users;
 }
 
+size_t	Channel::count_users(void) const
+{
+	return this->_users.size();
+}
+
 void	Channel::update_users_list(User *sender) const
 {
 	for (std::vector<User *>::const_iterator user = this->_users.begin(); user != this->_users.end(); ++user) {

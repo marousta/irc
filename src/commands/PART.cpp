@@ -49,7 +49,7 @@ void	Part::execute(ft::User *sender, const std::string& msg)
 	for (size_t i = 0; i < this->_channels.size(); ++i) {
 		Channel *channel;
 		try {
-			channel = this->_server.get_channel(this->_channels[i]);
+			channel = this->_server.get_channel_with_name(this->_channels[i]);
 		} catch (const std::string& err) {
 			sender->send(err);
 			continue ;
