@@ -44,3 +44,4 @@
 #define JOIN(nick, username, channel_name)						std::string(":") + username + "!~" + nick + " JOIN :" + channel_name
 #define PRIVMSG(nick, to, text)									std::string(":") + nick + " PRIVMSG " + to + " :" + text
 #define PART(nick, username, channel_name, reason)				std::string(":") + username + "!~" + nick + " PART " + channel_name + " :" + reason
+#define NICK(old_nick, username, new_nick)						std::string(":") + username + "!~" + old_nick + " NICK :" + new_nick

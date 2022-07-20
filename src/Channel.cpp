@@ -128,6 +128,17 @@ const std::string	Channel::list_users(void) const
 	return users;
 }
 
+void	Channel::update_users_list(User *sender) const
+{
+	for (std::vector<User *>::const_iterator user = this->_users.begin(); user != this->_users.end(); ++user) {
+		if (sender && sender->nick() != (*user)->nick()) {
+			continue ;
+		}
+		(*user)->send(RPL_NAMREPLY((*user)->nick(), this->_name, this->list_users()));
+		(*user)->send(RPL_ENDOFNAMES((*user)->nick(), this->_name));
+	}
+}
+
 void	Channel::add_operator(User *op)
 {
 	std::vector<User *>::iterator it = this->find_operator(op);
@@ -162,16 +173,6 @@ void	Channel::dispatch_message(User *sender, std::string message)
 			continue;
 		}
 		(*user)->send(message);
-	}
-}
-
-void	Channel::update_users_list(User *sender) const
-{
-	for (std::vector<User *>::const_iterator user = this->_users.begin(); user != this->_users.end(); ++user) {
-		if (sender->nick() != (*user)->nick()) {
-			(*user)->send(RPL_NAMREPLY((*user)->nick(), this->_name, this->list_users()));
-			(*user)->send(RPL_ENDOFNAMES((*user)->nick(), this->_name));
-		}
 	}
 }
 
