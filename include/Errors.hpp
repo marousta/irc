@@ -16,6 +16,7 @@
 #define ERR_NEEDMOREPARAMS(cmd)								std::string(":") + SERVER_NAME + " 461 " + cmd + " :Not enough parameters"
 #define ERR_ALREADYREGISTERED								std::string(":") + SERVER_NAME + " 462 :You may not reregister"
 #define ERR_PASSWDMISMATCH									std::string(":") + SERVER_NAME + " 464 :Password incorrect"
+#define ERR_BANNEDFROMCHAN(channel_name)					std::string(":") + SERVER_NAME + " 474 " + channel_name + " :Cannot join channel (+b)"
 #define ERR_BADCHANNELKEY(channel_name)						std::string(":") + SERVER_NAME + " 475 " + channel_name + " :Cannot join channel (+k)"
 #define ERR_CHANOPRIVSNEEDED(channel_name)					std::string(":") + SERVER_NAME + " 482 " + channel_name + " :You're not channel operator"
 #define ERR_INVALIDMODEPARAM(target, wrong_arg, param)		std::string(":") + SERVER_NAME + " 696 " + target + " " + wrong_arg + " " + param + " :invalid parameter given"

@@ -84,12 +84,47 @@ void	Channel::topic(std::string topic)
 	}
 }
 
+void	Channel::ban(const std::string& nick)
+{
+	if (this->check_banned(nick))
+		return ;
+
+	this->_ban.push_back(nick);
+}
+
+void	Channel::unban(const std::string& nick)
+{
+	std::vector<std::string>::iterator it = this->find_banned(nick);
+	if (it != this->_ban.end()) {
+		this->_ban.erase(it);
+	}
+}
+
+bool	Channel::check_banned(const std::string& nick) const
+{
+	for (std::vector<std::string>::const_iterator ban_nick = this->_ban.begin(); ban_nick != this->_ban.end(); ++ban_nick) {
+		if (*ban_nick == nick) {
+			return true;
+		}
+	}
+	return false;
+}
+
+const std::vector<std::string>	Channel::banned_list(void) const
+{
+	return this->_ban;
+}
+
 void	Channel::add_user(User *user)
 {
 	std::vector<User *>::iterator it = this->find_user(user);
 	if (it != this->_users.end()) {
 		throw ERR_USERONCHANNEL(user->nick, this->_name);
 	}
+	if (this->check_banned(user->nick())) {
+		throw ERR_BANNEDFROMCHAN(this->_name);
+	}
+
 	this->_users.push_back(user);
 
 	std::string nick = user->nick();
@@ -192,6 +227,16 @@ void	Channel::dispatch_message(User *sender, std::string message)
 	}
 }
 
+User*	Channel::get_user(const std::string& nick)
+{
+	for (std::vector<User *>::iterator it = this->_users.begin(); it != this->_users.end(); ++it) {
+		if ((*it)->nick() == nick) {
+			return *it;
+		}
+	}
+	throw;
+}
+
 std::vector<User *>::iterator		Channel::find_user(User *user)
 {
 	return std::find(this->_users.begin(), this->_users.end(), user);
@@ -212,5 +257,14 @@ std::vector<User *>::const_iterator	Channel::find_operator(User *op) const
 	return std::find(this->_operators.begin(), this->_operators.end(), op);
 }
 
+std::vector<std::string>::iterator		Channel::find_banned(const std::string& nick)
+{
+	return std::find(this->_ban.begin(), this->_ban.end(), nick);
+}
+
+std::vector<std::string>::const_iterator	Channel::find_banned(const std::string& nick) const
+{
+	return std::find(this->_ban.begin(), this->_ban.end(), nick);
+}
 
 }

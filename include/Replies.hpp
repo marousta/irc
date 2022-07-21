@@ -42,11 +42,14 @@
 #define	RPL_NOTOPIC(nick, channel_name)							std::string(":") + SERVER_NAME + " 331 " + nick + " " + channel_name + " :No topic is set"
 #define	RPL_TOPIC(nick, channel_name, topic)					std::string(":") + SERVER_NAME + " 332 " + nick + " " + channel_name + " :" + topic
 #define RPL_WHOREPLY(nick, usernmame)							std::string(":") + SERVER_NAME + " 352 " + nick + " * ~" + nick + " localhost " + SERVER_NAME + " " + nick + " H :0 " + usernmame
+#define RPL_BANLIST(nick, channel_name, user_nick)				std::string(":") + SERVER_NAME + " 367 " + nick + " " + channel_name + " " + user_nick
 #define RPL_ENDOFBANLIST(nick, channel_name)					std::string(":") + SERVER_NAME + " 368 " + nick + " " + channel_name + " :End of channel ban list"
 
 #define ERROR(text)												std::string(":") + "ERROR :" + text
 #define JOIN(nick, username, channel_name)						std::string(":") + nick + " JOIN :" + channel_name
 #define NICK(old_nick, username, new_nick)						std::string(":") + username + "!~" + old_nick + " NICK :" + new_nick
+#define MODE_BAN(nick, channel_name, user_nick)					std::string(":") + nick + " MODE " + channel_name + " +b " + user_nick
+#define MODE_UNBAN(nick, channel_name, user_nick)				std::string(":") + nick + " MODE " + channel_name + " -b " + user_nick
 #define NOTICE(nick, message)									std::string(":") + SERVER_NAME + " NOTICE " + nick + " :" + message
 #define PART(nick, username, channel_name, reason)				std::string(":") + nick + " PART " + channel_name + " :" + reason
 #define PRIVMSG(nick, to, text)									std::string(":") + nick + " PRIVMSG " + to + " :" + text

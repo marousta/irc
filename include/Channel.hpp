@@ -15,13 +15,14 @@ class User;
 
 class Channel {
 	private:
-		std::string			_name;
-		short				_mode;
-		std::string			_key;
-		std::string			_topic;
-		std::vector<User *>	_users;
-		std::vector<User *>	_operators;
-		Server				*_server;
+		std::string					_name;
+		short						_mode;
+		std::string					_key;
+		std::string					_topic;
+		std::vector<User *>			_users;
+		std::vector<User *>			_operators;
+		Server						*_server;
+		std::vector<std::string>	_ban;
 
 	public:
 		Channel(User *creator, std::string name, Server *server);
@@ -39,6 +40,11 @@ class Channel {
 		const std::string&	topic(void) const;
 		void				topic(std::string topic);
 
+		void							ban(const std::string& nick);
+		void							unban(const std::string& nick);
+		bool							check_banned(const std::string& nick) const;
+		const std::vector<std::string>	banned_list(void) const;
+
 		void				add_user(User *user);
 		void				remove_user(User *user);
 		bool				user_exist(User *user);
@@ -52,10 +58,14 @@ class Channel {
 		void	dispatch_message(User *sender, std::string message);
 
 	private:
-		std::vector<User *>::iterator find_user(User *);
-		std::vector<User *>::const_iterator find_user(User *) const;
-		std::vector<User *>::iterator find_operator(User *);
-		std::vector<User *>::const_iterator find_operator(User *) const;
+		User*	get_user(const std::string& nick);
+
+		std::vector<User *>::iterator				find_user(User *);
+		std::vector<User *>::const_iterator			find_user(User *) const;
+		std::vector<User *>::iterator				find_operator(User *);
+		std::vector<User *>::const_iterator			find_operator(User *) const;
+		std::vector<std::string>::iterator			find_banned(const std::string&);
+		std::vector<std::string>::const_iterator	find_banned(const std::string&) const;
 };
 
 }

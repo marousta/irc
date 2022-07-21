@@ -60,8 +60,7 @@ void	Mode::execute(ft::User *sender, const std::string& msg)
 
 	this->parse(msg);
 
-	if (this->_target.empty()
-	|| (this->_operation == '+' && this->_arg.empty())) {
+	if (this->_target.empty()) {
 		throw ERR_NEEDMOREPARAMS(this->_name);
 	}
 
@@ -70,13 +69,40 @@ void	Mode::execute(ft::User *sender, const std::string& msg)
 	if (this->_operation == '+') {
 		switch (this->_mode)
 		{
-			case 'k': channel->key(this->_arg); break;
+			case 'k':	if (!channel->check_operator(sender)) throw ERR_CHANOPRIVSNEEDED(this->_target);
+						channel->key(this->_arg);
+						return;
+
+			case 'b':	if (this->_arg.empty()) {
+							const std::vector<std::string> list = channel->banned_list();
+
+							for (std::vector<std::string>::const_iterator nick = list.begin(); nick != list.end(); ++nick) {
+								sender->send(RPL_BANLIST(sender->nick(), this->_target, *nick));
+							}
+							sender->send(RPL_ENDOFBANLIST(sender->nick(), this->_target));
+							return;
+						}
+						if (!channel->check_operator(sender)) throw ERR_CHANOPRIVSNEEDED(this->_target);
+						channel->ban(this->_arg);
+						channel->dispatch_message(NULL, MODE_BAN(sender->nick(), this->_target, this->_arg));
+						return;
+
 			default: throw ERR_INVALIDMODEPARAM(this->_target, this->_operation + this->_mode, "");
 		}
 	} else if (this->_operation == '-') {
 		switch (this->_mode)
 		{
-			case 'k': channel->key(""); break;
+			case 'k':	if (!channel->check_operator(sender)) throw ERR_CHANOPRIVSNEEDED(this->_target);
+						channel->key("");
+						return;
+
+			case 'b':	if (!channel->check_operator(sender)) throw ERR_CHANOPRIVSNEEDED(this->_target);
+						if (channel->check_banned(this->_arg)) {
+							channel->unban(this->_arg);
+							channel->dispatch_message(NULL, MODE_UNBAN(sender->nick(), this->_target, this->_arg));
+						}
+						return;
+
 			default: throw ERR_INVALIDMODEPARAM(this->_target, this->_operation + this->_mode, "");
 		}
 	} else {
