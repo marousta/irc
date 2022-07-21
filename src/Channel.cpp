@@ -11,16 +11,16 @@ namespace ft {
 Channel::Channel(User *creator, std::string name, Server *server)
 	: _name(name), _mode(MODE_DEFAULT | MODE_T), _key(""), _topic(""), _server(server)
 {
-	this->add_user(creator);
 	this->add_operator(creator);
+	this->add_user(creator);
 	std::cout << GRN "OK" COLOR_RESET << std::endl;
 }
 
 Channel::Channel(User *creator, std::string name, std::string key, Server *server)
 	: _name(name), _mode(MODE_K | MODE_T), _key(key), _topic(""), _server(server)
 {
-	this->add_user(creator);
 	this->add_operator(creator);
+	this->add_user(creator);
 	std::cout << GRN "OK" COLOR_RESET << std::endl;
 }
 
@@ -140,7 +140,11 @@ const std::string	Channel::list_users(void) const
 
 	for (std::vector<User *>::const_iterator it = this->_users.begin(); it != this->_users.end(); it++) {
 		if ((*it)->registered()) {
-			users += (*it)->nick() + " ";
+			if (this->check_operator((*it))) {
+				users += "@" + (*it)->nick() + " ";
+			} else {
+				users += (*it)->nick() + " ";
+			}
 		}
 	}
 	return users;
