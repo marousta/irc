@@ -436,6 +436,7 @@ void	Server::setup_commands()
 
 	this->_commands["HELP"] = new cmd::Help(*this);
 	this->_commands["JOIN"] = new cmd::Join(*this);
+	this->_commands["KICK"] = new cmd::Kick(*this);
 	this->_commands["LIST"] = new cmd::List(*this);
 	this->_commands["MODE"] = new cmd::Mode(*this);
 	this->_commands["NICK"] = new cmd::Nick(*this);

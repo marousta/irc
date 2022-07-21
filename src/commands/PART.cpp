@@ -14,8 +14,6 @@ void	Part::parse(const std::string& msg)
 	this->_channels.clear();
 	this->_reason.clear();
 
-	std::string parsed;
-
 	const char *mg = &msg[0];
 	std::string channel_str;
 
@@ -27,6 +25,7 @@ void	Part::parse(const std::string& msg)
 		throw ERR_NEEDMOREPARAMS(this->_name);
 	}
 
+	std::string parsed;
 	std::stringstream str(channel_str);
 	while (std::getline(str, parsed, ',')) {
 		this->_channels.push_back(parsed);

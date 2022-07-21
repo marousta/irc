@@ -160,9 +160,19 @@ void	Channel::remove_user(User *user)
 	}
 }
 
-bool	Channel::user_exist(User *user)
+User*		Channel::get_user(const std::string& nick) const
 {
-	std::vector<User *>::iterator it = this->find_user(user);
+	for (std::vector<User *>::const_iterator it = this->_users.begin(); it != this->_users.end(); ++it) {
+		if ((*it)->nick() == nick) {
+			return *it;
+		}
+	}
+	throw std::string();
+}
+
+bool	Channel::user_exist(User *user) const
+{
+	std::vector<User *>::const_iterator it = this->find_user(user);
 	if (it == this->_users.end()) {
 		return false;
 	}
@@ -225,16 +235,6 @@ void	Channel::dispatch_message(User *sender, std::string message)
 		}
 		(*user)->send(message);
 	}
-}
-
-User*	Channel::get_user(const std::string& nick)
-{
-	for (std::vector<User *>::iterator it = this->_users.begin(); it != this->_users.end(); ++it) {
-		if ((*it)->nick() == nick) {
-			return *it;
-		}
-	}
-	throw;
 }
 
 std::vector<User *>::iterator		Channel::find_user(User *user)

@@ -3,6 +3,7 @@
 #define DEBUG_DESC		std::string("(Custom command) print server related stuff.")
 #define HELP_DESC		std::string("[<subject>] Show list of avaliable commands. Show usage of a command if specified.")
 #define JOIN_DESC		std::string("<channel>[,<channel>[,...]] [<key>[,<key>[,...]]] Makes the client join the <channel> (comma-separated list), specifying the channel keys (\"passwords\"). A <channel-key> is only needed if the <channel> has the mode \"+k\" set.")
+#define KICK_DESC		std::string("<channel> <nickname>[,<nickname>[,...]] Kick given users from channels.")
 #define LIST_DESC		std::string("List all visible channels.")
 #define MODE_DESC		std::string("<target> [<modestring>] [<mode arguments>] Add, remove, change key/topic of a channel.")
 #define NICK_DESC		std::string("<nickname> Change user nickname.")
