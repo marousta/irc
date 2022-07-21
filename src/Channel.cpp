@@ -227,6 +227,25 @@ bool	Channel::check_operator(User *user) const
 	return true;
 }
 
+void	Channel::op(const std::string& nick)
+{
+	User *user = this->get_user(nick);
+
+	if (this->check_operator(user)) {
+		return ;
+	}
+	this->add_operator(user);
+}
+
+void	Channel::deop(const std::string& nick)
+{
+	User *user = this->get_user(nick);
+
+	if (this->check_operator(user)) {
+		this->remove_operator(user);
+	}
+}
+
 void	Channel::dispatch_message(User *sender, std::string message)
 {
 	for (std::vector<User *>::iterator user = this->_users.begin(); user != this->_users.end(); ++user) {

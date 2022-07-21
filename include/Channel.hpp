@@ -56,11 +56,12 @@ class Channel {
 		void	add_operator(User *op);
 		void	remove_operator(User *op);
 		bool	check_operator(User *user) const;
+		void	op(const std::string& nick);
+		void	deop(const std::string& nick);
 
 		void	dispatch_message(User *sender, std::string message);
 
 	private:
-
 		std::vector<User *>::iterator				find_user(User *);
 		std::vector<User *>::const_iterator			find_user(User *) const;
 		std::vector<User *>::iterator				find_operator(User *);

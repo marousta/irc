@@ -86,6 +86,10 @@ void	Mode::execute(ft::User *sender, const std::string& msg)
 						channel->ban(this->_arg);
 						channel->dispatch_message(NULL, MODE_BAN(sender->nick(), this->_target, this->_arg));
 						return;
+			case 'o':	if (!channel->check_operator(sender)) throw ERR_CHANOPRIVSNEEDED(this->_target);
+						channel->op(this->_arg);
+						channel->dispatch_message(NULL, MODE_OP(sender->nick(), this->_target, this->_arg));
+						return;
 
 			default: throw ERR_INVALIDMODEPARAM(this->_target, this->_operation + this->_mode, "");
 		}
@@ -101,6 +105,10 @@ void	Mode::execute(ft::User *sender, const std::string& msg)
 							channel->unban(this->_arg);
 							channel->dispatch_message(NULL, MODE_UNBAN(sender->nick(), this->_target, this->_arg));
 						}
+						return;
+			case 'o':	if (!channel->check_operator(sender)) throw ERR_CHANOPRIVSNEEDED(this->_target);
+						channel->deop(this->_arg);
+						channel->dispatch_message(NULL, MODE_DEOP(sender->nick(), this->_target, this->_arg));
 						return;
 
 			default: throw ERR_INVALIDMODEPARAM(this->_target, this->_operation + this->_mode, "");

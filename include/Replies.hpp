@@ -50,6 +50,8 @@
 #define NICK(old_nick, username, new_nick)						std::string(":") + username + "!~" + old_nick + " NICK :" + new_nick
 #define MODE_BAN(nick, channel_name, user_nick)					std::string(":") + nick + " MODE " + channel_name + " +b " + user_nick
 #define MODE_UNBAN(nick, channel_name, user_nick)				std::string(":") + nick + " MODE " + channel_name + " -b " + user_nick
+#define MODE_OP(nick, channel_name, user_nick)					std::string(":") + nick + " MODE " + channel_name + " +o " + user_nick
+#define MODE_DEOP(nick, channel_name, user_nick)				std::string(":") + nick + " MODE " + channel_name + " -o " + user_nick
 #define NOTICE(nick, message)									std::string(":") + SERVER_NAME + " NOTICE " + nick + " :" + message
 #define PART(nick, username, channel_name, reason)				std::string(":") + nick + " PART " + channel_name + " :" + reason
 #define PRIVMSG(nick, to, text)									std::string(":") + nick + " PRIVMSG " + to + " :" + text
