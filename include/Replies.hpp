@@ -12,7 +12,7 @@
 																													" CASEMAPPING=ascii" \
 																													" PREFIX=" + SERVER_PREFIX + \
 																													" CHANTYPES=#" \
-																													" CHANMODES=kit" \
+																													" CHANMODES=kt" \
 																													" CHANLIMIT=#:" + convert_string(SERVER_CHANLIMIT) + \
 																													" CHANNELLEN=" + convert_string(SERVER_CHANNELLEN) + \
 																													" NICKLEN=" + convert_string(SERVER_NICKLEN) + \

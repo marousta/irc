@@ -13,6 +13,7 @@ namespace ft {
 class Server;
 class User;
 
+//TODO: CHANNEL CHAR LIMIT + USERS LIMIT
 class Channel {
 	private:
 		std::string					_name;
