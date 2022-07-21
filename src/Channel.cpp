@@ -140,9 +140,8 @@ void	Channel::add_user(User *user)
 
 	for (std::vector<User *>::const_iterator it = this->_users.begin(); it != this->_users.end(); ++it) {
 		(*it)->send(JOIN(nick, user->username(), this->_name));
-		(*it)->send(RPL_NAMREPLY(nick, this->_name, this->list_users()));
-		(*it)->send(RPL_ENDOFNAMES(nick, this->_name));
 	}
+	this->update_users();
 }
 
 void	Channel::remove_user(User *user)
@@ -193,6 +192,14 @@ const std::string	Channel::list_users(void) const
 		}
 	}
 	return users;
+}
+
+void	Channel::update_users(void) const
+{
+	for (std::vector<User *>::const_iterator it = this->_users.begin(); it != this->_users.end(); ++it) {
+		(*it)->send(RPL_NAMREPLY((*it)->nick(), this->_name, this->list_users()));
+		(*it)->send(RPL_ENDOFNAMES((*it)->nick(), this->_name));
+	}
 }
 
 size_t	Channel::count_users(void) const

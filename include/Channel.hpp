@@ -51,6 +51,7 @@ class Channel {
 		User*				get_user(const std::string& nick) const;
 		bool				user_exist(User *user) const;
 		const std::string	list_users(void) const;
+		void				update_users(void) const;
 		size_t				count_users(void) const;
 
 		void	add_operator(User *op);

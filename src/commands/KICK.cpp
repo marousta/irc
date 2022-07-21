@@ -95,11 +95,8 @@ void	Kick::execute(ft::User *sender, const std::string& msg)
 		}
 	}
 
-	std::map<std::string, ft::Command *> command = this->_server.get_commands();
-	Command *cmd = command.at("PART");
-
 	for (std::vector<ft::User *>::iterator kicked_user = users.begin(); kicked_user != users.end(); ++kicked_user) {
-		cmd->execute(*kicked_user, this->_channel + " " + this->_reason);
+		channel->dispatch_message(NULL, KICK(sender->nick(), sender->username(), this->_channel, (*kicked_user)->nick(), this->_reason));
 	}
 }
 

@@ -47,6 +47,7 @@
 
 #define ERROR(text)												std::string(":") + "ERROR :" + text
 #define JOIN(nick, username, channel_name)						std::string(":") + nick + " JOIN :" + channel_name
+#define KICK(nick, username, channel_name, target, reason)		std::string(":") + username + "!~" + nick + " KICK " + channel_name + " " + target + " :" + reason
 #define NICK(old_nick, username, new_nick)						std::string(":") + username + "!~" + old_nick + " NICK :" + new_nick
 #define MODE_BAN(nick, channel_name, user_nick)					std::string(":") + nick + " MODE " + channel_name + " +b " + user_nick
 #define MODE_UNBAN(nick, channel_name, user_nick)				std::string(":") + nick + " MODE " + channel_name + " -b " + user_nick

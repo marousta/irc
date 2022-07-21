@@ -61,6 +61,7 @@ void	Part::execute(ft::User *sender, const std::string& msg)
 				continue ;
 			} else {
 				channel->dispatch_message(NULL, PART(sender->nick(), sender->username(), channel->name(), this->_reason));
+				channel->update_users();
 				channel->remove_user(sender);
 			}
 		} catch (const std::string& err) {
