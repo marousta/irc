@@ -28,6 +28,10 @@ void	Privmsg::parse(const std::string& msg)
 		++mg;
 	}
 
+	if (first.empty()) {
+		throw ERR_NEEDMOREPARAMS(this->_name);
+	}
+
 	if (*mg == ':') {
 		++mg;
 	}

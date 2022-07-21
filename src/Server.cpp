@@ -139,9 +139,6 @@ void	Server::poll()
 				user->append_to_message(buf);
 			} else {
 				this->request_disconnect(i);
-				if (i-- == 0) {
-					break ;
-				}
 				continue ;
 			}
 		}
@@ -152,18 +149,13 @@ void	Server::poll()
 			std::string message = user->response_queue_pop();
 			if (::send(user->socket(), &message[0], message.size(), 0) < 0) {
 				this->request_disconnect(i);
-				if (i-- == 0) {
-					break ;
-				}
 				continue ;
 			}
 			std::cout << BLU "SERVER " COLOR_RESET << message;
 		}
 		if (pfd.revents & POLLHUP) {
 			this->request_disconnect(i);
-			if (i-- == 0) {
-				break ;
-			}
+			continue ;
 		}
 	}
 }
