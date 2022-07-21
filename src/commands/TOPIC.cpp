@@ -55,6 +55,7 @@ void	Topic::execute(ft::User *sender, const std::string& msg)
 	if (this->_topic.empty()) {
 		sender->send(RPL_TOPIC(sender->nick(), this->_channel, channel->topic()));
 	} else {
+		if (channel->mode() & MODE_T && !channel->check_operator(sender)) throw ERR_CHANOPRIVSNEEDED(channel->name());
 		channel->topic(this->_topic);
 		channel->dispatch_message(NULL, TOPIC(sender->nick(), sender->username(), this->_channel, this->_topic));
 	}
