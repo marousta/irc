@@ -46,6 +46,9 @@ void	Part::parse(const std::string& msg)
 
 void	Part::execute(ft::User *sender, const std::string& msg)
 {
+	if (!sender->entered()) {
+		throw ERR_NOLOGIN;
+	}
 	if (!sender->registered()) {
 		throw ERR_NOTREGISTERED;
 	}

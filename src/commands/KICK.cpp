@@ -74,6 +74,12 @@ void	Kick::parse(const std::string& msg)
 
 void	Kick::execute(ft::User *sender, const std::string& msg)
 {
+	if (!sender->entered()) {
+		throw ERR_NOLOGIN;
+	}
+	if (!sender->registered()) {
+		throw ERR_NOTREGISTERED;
+	}
 	this->parse(msg);
 
 	// PARSING DEBUG
@@ -84,6 +90,10 @@ void	Kick::execute(ft::User *sender, const std::string& msg)
 	// std::cout << this->_reason << std::endl;
 
 	Channel *channel = this->_server.get_channel_with_name(this->_channel);
+
+	if (!channel->check_operator(sender)) {
+		throw ERR_CHANOPRIVSNEEDED(this->_channel);
+	}
 
 	std::vector<ft::User *> users;
 	for (std::vector<std::string>::iterator it = this->_users.begin(); it != this->_users.end(); ++it) {
