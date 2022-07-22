@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <cstring>
 
+#include "Colors.hpp"
 #include "Server.hpp"
 
 bool	check_digit(const char *str)
@@ -64,7 +65,7 @@ int	main(int ac, char **av)
 	try {
 		server = new ft::Server(port, pass);
 	} catch (const std::string& err) {
-		std::cerr << err << std::endl;
+		std::cerr << RED << err << COLOR_RESET << std::endl;
 		return -1;
 	}
 
@@ -73,7 +74,7 @@ int	main(int ac, char **av)
 			server->poll();
 		}
 	} catch (const std::string& err) {
-		std::cerr << err << std::endl;
+		std::cerr << RED << err << COLOR_RESET << std::endl;
 		return -2;
 	}
 

@@ -1,6 +1,7 @@
 #include <vector>
 #include <iostream>
 
+#include "Colors.hpp"
 #include "Server.hpp"
 #include "Channel.hpp"
 #include "User.hpp"
@@ -38,7 +39,7 @@ void	Quit::execute(ft::User *sender, const std::string& msg)
 	if (i >= 0) {
 		this->_server.request_disconnect(i);
 	} else {
-		std::cerr << "WARNING: User quit but was not connected. This should NOT happen" << std::endl;
+		std::cerr << RED "ERROR: User quit but was not connected. THIS SHOULD NOT HAPPEN !" COLOR_RESET << std::endl;
 	}
 
 	std::vector<Channel *> channels = this->_server.get_channels_with_user(sender);

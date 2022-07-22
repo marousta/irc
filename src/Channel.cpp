@@ -211,7 +211,7 @@ void	Channel::add_operator(User *op)
 {
 	std::vector<User *>::iterator it = this->find_operator(op);
 	if (it != this->_operators.end()) {
-		std::cout << RED << op->nick() << " is already an operator. THIS SHOULD NOT HAPPEN !" COLOR_RESET << std::endl;
+		std::cerr << RED "WARNING: " COLOR_RESET << op->nick() << RED " is already an operator. THIS SHOULD NOT HAPPEN !" COLOR_RESET << std::endl;
 		return ;
 	}
 	this->_operators.push_back(op);
