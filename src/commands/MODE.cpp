@@ -86,29 +86,40 @@ void	Mode::execute(ft::User *sender, const std::string& msg)
 						channel->ban(this->_arg);
 						channel->dispatch_message(NULL, MODE_BAN(sender->nick(), this->_target, this->_arg));
 						return;
+
 			case 'o':	if (!channel->check_operator(sender)) throw ERR_CHANOPRIVSNEEDED(this->_target);
 						channel->op(this->_arg);
 						channel->dispatch_message(NULL, MODE_OP(sender->nick(), this->_target, this->_arg));
 						return;
 
+			case 't':	channel->mode(MODE_T);
+						channel->dispatch_message(NULL, MODE_TOPICPROTECTED(sender->nick(), this->_target));
+						return;
+
 			default: throw ERR_INVALIDMODEPARAM(this->_target, this->_operation + this->_mode, "");
 		}
 	} else if (this->_operation == '-') {
+		if (!channel->check_operator(sender)) {
+			throw ERR_CHANOPRIVSNEEDED(this->_target);
+		}
+
 		switch (this->_mode)
 		{
-			case 'k':	if (!channel->check_operator(sender)) throw ERR_CHANOPRIVSNEEDED(this->_target);
-						channel->key("");
+			case 'k':	channel->key("");
 						return;
 
-			case 'b':	if (!channel->check_operator(sender)) throw ERR_CHANOPRIVSNEEDED(this->_target);
-						if (channel->check_banned(this->_arg)) {
+			case 'b':	if (channel->check_banned(this->_arg)) {
 							channel->unban(this->_arg);
 							channel->dispatch_message(NULL, MODE_UNBAN(sender->nick(), this->_target, this->_arg));
 						}
 						return;
-			case 'o':	if (!channel->check_operator(sender)) throw ERR_CHANOPRIVSNEEDED(this->_target);
-						channel->deop(this->_arg);
+
+			case 'o':	channel->deop(this->_arg);
 						channel->dispatch_message(NULL, MODE_DEOP(sender->nick(), this->_target, this->_arg));
+						return;
+
+			case 't':	channel->unset_mode(MODE_T);
+						channel->dispatch_message(NULL, MODE_TOPICUNPROTECTED(sender->nick(), this->_target));
 						return;
 
 			default: throw ERR_INVALIDMODEPARAM(this->_target, this->_operation + this->_mode, "");

@@ -54,6 +54,8 @@
 #define MODE_UNBAN(nick, channel_name, user_nick)				std::string(":") + nick + " MODE " + channel_name + " -b " + user_nick
 #define MODE_OP(nick, channel_name, user_nick)					std::string(":") + nick + " MODE " + channel_name + " +o " + user_nick
 #define MODE_DEOP(nick, channel_name, user_nick)				std::string(":") + nick + " MODE " + channel_name + " -o " + user_nick
+#define MODE_TOPICPROTECTED(nick, channel_name)					std::string(":") + nick + " MODE " + channel_name + " +t"
+#define MODE_TOPICUNPROTECTED(nick, channel_name)				std::string(":") + nick + " MODE " + channel_name + " -t"
 #define NOTICE(nick, username, to, message)						std::string(":") + nick + "!~" + username + " NOTICE " + to + " :" + message
 #define PART(nick, username, channel_name, reason)				std::string(":") + nick + " PART " + channel_name + " :" + reason
 #define PRIVMSG(nick, username, to, text)						std::string(":") + nick + "!~" + username + " PRIVMSG " + to + " :" + text
