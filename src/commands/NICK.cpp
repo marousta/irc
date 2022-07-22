@@ -72,13 +72,7 @@ void	Nick::execute(ft::User *sender, const std::string& msg)
 	}
 	if (sender->registered()) {
 		std::cout << YEL "User " COLOR_RESET << old_nick << YEL " changed his nickname to " COLOR_RESET << sender->nick() << std::endl;
-
-		std::vector<Channel *> channels = this->_server.get_channels_with_user(sender);
-		for (std::vector<Channel *>::iterator channel = channels.begin(); channel != channels.end(); ++channel) {
-			(*channel)->dispatch_message(NULL, NICK(sender->username(), old_nick, sender->nick()));
-		}
-
-		sender->send(RPL_WELCOME(sender->nick(), sender->username()));
+		this->_server.dispatch_message(NICK(sender->username(), old_nick, sender->nick()));
 	}
 }
 

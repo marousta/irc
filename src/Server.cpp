@@ -273,6 +273,13 @@ size_t	Server::user_count(void) const
 	return count;
 }
 
+void	Server::dispatch_message(const std::string& msg) const
+{
+	for (std::vector<User *>::const_iterator user = this->_users.begin(); user != this->_users.end(); ++user) {
+		(*user)->send(msg);
+	}
+}
+
 void	Server::create_channel(User *creator, const std::string& channel_name, const std::string& key)
 {
 	if (key.empty()) {

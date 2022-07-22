@@ -253,9 +253,9 @@ void	Channel::deop(const std::string& nick)
 	}
 }
 
-void	Channel::dispatch_message(User *sender, std::string message)
+void	Channel::dispatch_message(User *sender, const std::string& message) const
 {
-	for (std::vector<User *>::iterator user = this->_users.begin(); user != this->_users.end(); ++user) {
+	for (std::vector<User *>::const_iterator user = this->_users.begin(); user != this->_users.end(); ++user) {
 		if (sender && (*user)->socket() == sender->socket()) {
 			continue;
 		}

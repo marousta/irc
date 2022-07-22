@@ -39,6 +39,7 @@ class Server {
 		User*	get_user_username(const std::string& username) const;
 		User*	get_user_nick(const std::string& nick) const;
 		size_t	user_count(void) const;
+		void	dispatch_message(const std::string& msg) const;
 
 		void	create_channel(User *creator, const std::string& name, const std::string& key = "");
 		void	remove_channel(const std::string& name);

@@ -60,7 +60,7 @@ class Channel {
 		void	op(const std::string& nick);
 		void	deop(const std::string& nick);
 
-		void	dispatch_message(User *sender, std::string message);
+		void	dispatch_message(User *sender, const std::string& message) const;
 
 	private:
 		std::vector<User *>::iterator				find_user(User *);
