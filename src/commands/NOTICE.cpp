@@ -1,5 +1,3 @@
-#include <cstring>
-
 #include "Server.hpp"
 #include "Channel.hpp"
 #include "User.hpp"
@@ -8,11 +6,11 @@
 namespace ft {
 namespace cmd {
 
-Privmsg::Privmsg(ft::Server& server)
-	: Command(server, "PRIVMSG", PRIVMSG_DESC)
+Notice::Notice(ft::Server& server)
+	: Command(server, "DEBUG", DEBUG_DESC)
 {	}
 
-void	Privmsg::parse(const std::string& msg)
+void	Notice::parse(const std::string& msg)
 {
 	this->_channels.clear();
 	this->_users.clear();
@@ -50,7 +48,7 @@ void	Privmsg::parse(const std::string& msg)
 	this->_text = mg;
 }
 
-void	Privmsg::execute(ft::User *sender, const std::string& msg)
+void	Notice::execute(ft::User *sender, const std::string& msg)
 {
 	if (!sender->entered()) {
 		throw ERR_NOLOGIN;
@@ -64,7 +62,7 @@ void	Privmsg::execute(ft::User *sender, const std::string& msg)
 	for (std::vector<std::string>::iterator channel_name = this->_channels.begin(); channel_name != this->_channels.end(); ++channel_name) {
 		try {
 			Channel *channel = this->_server.get_channel_with_name(*channel_name);
-			channel->dispatch_message(sender, PRIVMSG(sender->nick(), sender->username(), *channel_name, this->_text));
+			channel->dispatch_message(sender, NOTICE(sender->nick(), sender->username(), *channel_name, this->_text));
 		}
 		catch (std::string& e) {
 			sender->send(e);
@@ -78,7 +76,7 @@ void	Privmsg::execute(ft::User *sender, const std::string& msg)
 			if (!receiver) {
 				throw ERR_NOSUCHNICK(sender->nick(), *receiver_nick);
 			}
-			receiver->send(PRIVMSG(sender->nick(), sender->username(), *receiver_nick, this->_text));
+			receiver->send(NOTICE(sender->nick(), sender->username(),*receiver_nick, this->_text));
 		}
 		catch (std::string& e) {
 			sender->send(e);

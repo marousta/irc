@@ -97,6 +97,12 @@ CLASS_COMMAND_BEGIN(Nick);
 std::string _nick;
 CLASS_COMMAND_END();
 
+CLASS_COMMAND_BEGIN(Notice);
+std::vector<std::string> _channels;
+std::vector<std::string> _users;
+std::string _text;
+CLASS_COMMAND_END();
+
 CLASS_COMMAND_BEGIN(Part);
 std::vector<std::string> _channels;
 std::string _reason;

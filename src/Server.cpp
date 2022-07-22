@@ -432,6 +432,7 @@ void	Server::setup_commands()
 	this->_commands["LIST"] = new cmd::List(*this);
 	this->_commands["MODE"] = new cmd::Mode(*this);
 	this->_commands["NICK"] = new cmd::Nick(*this);
+	this->_commands["NOTICE"] = new cmd::Notice(*this);
 	this->_commands["PART"] = new cmd::Part(*this);
 	this->_commands["PASS"] = new cmd::Pass(*this);
 	this->_commands["PING"] = new cmd::Ping(*this);

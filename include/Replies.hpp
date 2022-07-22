@@ -46,14 +46,15 @@
 #define RPL_ENDOFBANLIST(nick, channel_name)					std::string(":") + SERVER_NAME + " 368 " + nick + " " + channel_name + " :End of channel ban list"
 
 #define ERROR(text)												std::string(":") + "ERROR :" + text
+#define HELP(nick, to, message)									std::string(":") + SERVER_NAME + " NOTICE " + nick + " :" + message
 #define JOIN(nick, username, channel_name)						std::string(":") + nick + " JOIN :" + channel_name
-#define KICK(nick, username, channel_name, target, reason)		std::string(":") + username + "!~" + nick + " KICK " + channel_name + " " + target + " :" + reason
-#define NICK(old_nick, username, new_nick)						std::string(":") + username + "!~" + old_nick + " NICK :" + new_nick
+#define KICK(nick, username, channel_name, target, reason)		std::string(":") + nick + "!~" + username + " KICK " + channel_name + " " + target + " :" + reason
+#define NICK(old_nick, username, new_nick)						std::string(":") + old_nick + "!~" + username + " NICK :" + new_nick
 #define MODE_BAN(nick, channel_name, user_nick)					std::string(":") + nick + " MODE " + channel_name + " +b " + user_nick
 #define MODE_UNBAN(nick, channel_name, user_nick)				std::string(":") + nick + " MODE " + channel_name + " -b " + user_nick
 #define MODE_OP(nick, channel_name, user_nick)					std::string(":") + nick + " MODE " + channel_name + " +o " + user_nick
 #define MODE_DEOP(nick, channel_name, user_nick)				std::string(":") + nick + " MODE " + channel_name + " -o " + user_nick
-#define NOTICE(nick, message)									std::string(":") + SERVER_NAME + " NOTICE " + nick + " :" + message
+#define NOTICE(nick, username, to, message)						std::string(":") + nick + "!~" + username + " NOTICE " + to + " :" + message
 #define PART(nick, username, channel_name, reason)				std::string(":") + nick + " PART " + channel_name + " :" + reason
-#define PRIVMSG(nick, to, text)									std::string(":") + nick + " PRIVMSG " + to + " :" + text
+#define PRIVMSG(nick, username, to, text)						std::string(":") + nick + "!~" + username + " PRIVMSG " + to + " :" + text
 #define TOPIC(nick, username, channel_name, topic)				std::string(":") + nick + " TOPIC " + channel_name + " :" + topic
