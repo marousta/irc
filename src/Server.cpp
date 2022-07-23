@@ -283,10 +283,10 @@ void	Server::dispatch_message(const std::string& msg) const
 void	Server::create_channel(User *creator, const std::string& channel_name, const std::string& key)
 {
 	if (key.empty()) {
-		std::cout << YEL "Creating channel " COLOR_RESET << channel_name << YEL "... " COLOR_RESET;
+		std::cout << YEL "Creating channel '" COLOR_RESET << channel_name << YEL "'... " COLOR_RESET;
 		this->_channels[channel_name] = new Channel(creator, channel_name, this);
 	} else {
-		std::cout << YEL "Creating channel " COLOR_RESET << channel_name << YEL " with key... " COLOR_RESET;
+		std::cout << YEL "Creating channel '" COLOR_RESET << channel_name << YEL "' with key... " COLOR_RESET;
 		this->_channels[channel_name] = new Channel(creator, channel_name, key, this);
 	}
 }
@@ -317,8 +317,7 @@ void	Server::join_channel(User *user, const std::string& channel_name, const std
 			channel->add_user(user);
 		}
 	}
-	catch (std::exception &e) {
-		(void)e;
+	catch (const std::exception &) {
 		this->create_channel(user, channel_name, key);
 	}
 }
@@ -327,7 +326,6 @@ size_t	Server::channel_count(void) const
 {
 	return this->_channels.size();
 }
-
 
 Channel*	Server::get_channel_with_name(const std::string& name)
 {

@@ -72,7 +72,7 @@ const std::string&	Channel::topic(void) const
 
 void	Channel::topic(std::string topic)
 {
-	if (this->_topic.size() > SERVER_TOPICLEN) {
+	if (topic.size() > SERVER_TOPICLEN) {
 		throw ERR_NEEDMOREPARAMS("TOPIC");
 	}
 	this->_topic = topic;

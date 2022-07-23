@@ -49,8 +49,6 @@ class User {
 		const std::string&	realname() const;
 		void				realname(std::string& realname);
 
-		const std::string& message() const;
-
 		size_t		response_queue_size() const;
 		std::string	response_queue_pop();
 

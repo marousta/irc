@@ -101,7 +101,7 @@ const std::string&	User::username() const
 void	User::username(std::string& username)
 {
 	if (this->_username != "") {
-		throw ERR_ALREADYREGISTERED;
+		throw ERR_ALREADYREGISTRED;
 	}
 	this->_username = username;
 }
@@ -114,14 +114,9 @@ const	std::string& User::realname() const
 void	User::realname(std::string& realname)
 {
 	if (this->_realname != "") {
-		throw ERR_ALREADYREGISTERED;
+		throw ERR_ALREADYREGISTRED;
 	}
 	this->_realname = realname;
-}
-
-const std::string&	User::message() const
-{
-	return this->_message;
 }
 
 size_t	User::response_queue_size() const

@@ -61,6 +61,11 @@ void	Privmsg::execute(ft::User *sender, const std::string& msg)
 
 	this->parse(msg);
 
+	if (this->_text.empty()
+	|| (this->_channels.empty() && this->_users.empty())) {
+		throw ERR_NOTEXTTOSEND(sender->nick());
+	}
+
 	for (std::vector<std::string>::iterator channel_name = this->_channels.begin(); channel_name != this->_channels.end(); ++channel_name) {
 		try {
 			Channel *channel = this->_server.get_channel_with_name(*channel_name);

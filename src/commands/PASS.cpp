@@ -28,7 +28,7 @@ void	Pass::parse(const std::string& msg)
 void	Pass::execute(ft::User *sender, const std::string& msg)
 {
 	if (sender->registered()) {
-		throw ERR_ALREADYREGISTERED;
+		throw ERR_ALREADYREGISTRED;
 	}
 
 	this->parse(msg);

@@ -55,13 +55,13 @@ void	Join::execute(ft::User *sender, const std::string& msg)
 	this->parse(msg);
 
 	for (size_t i = 0; i < this->_channels.size(); ++i) {
-		if (this->_channels[i].first[0] != '#' || this->_channels[i].first.size() > 50) {
+		if (this->_channels[i].first[0] != '#' || this->_channels[i].first.size() > SERVER_CHANNELLEN) {
 			sender->send(ERR_NOSUCHCHANNEL(this->_channels[i].first));
 		} else {
 			try {
 				this->_server.join_channel(sender, this->_channels[i].first, this->_channels[i].second);
 			}
-			catch (std::string& e) {
+			catch (const std::string& e) {
 				sender->send(e);
 			}
 		}

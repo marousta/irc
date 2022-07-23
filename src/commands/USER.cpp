@@ -15,7 +15,7 @@ void	successfully_registered(ft::User *user, Server *server)
 
 	user->send(RPL_WELCOME(nick, user->username()));
 	user->send(RPL_YOURHOST(nick));
-	user->send(RPL_MYINFO(nick));
+	// user->send(RPL_MYINFO(nick));
 	user->send(RPL_BOUNCE(nick));
 	user->send(RPL_LUSERCLIENT(nick, convert_string(server->user_count())));
 	user->send(RPL_LUSERCHANNELS(nick, convert_string(server->channel_count())));
@@ -85,10 +85,14 @@ void	User::parse(const std::string& msg)
 void	User::execute(ft::User *sender, const std::string& msg)
 {
 	if (sender->registered()) {
-		throw ERR_ALREADYREGISTERED;
+		throw ERR_ALREADYREGISTRED;
 	}
 
 	this->parse(msg);
+
+	if (this->_username.size() > SERVER_USERLEN) {
+		throw ERROR("Username size exceed server limit of " + convert_string(SERVER_USERLEN) + " characters");
+	}
 
 	sender->username(this->_username);
 	sender->realname(this->_realname);
