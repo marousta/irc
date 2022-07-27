@@ -54,6 +54,16 @@ void	Join::execute(ft::User *sender, const std::string& msg)
 
 	this->parse(msg);
 
+	if (this->_channels.size() == 1 && this->_channels[0].first[0] == '0') {
+		std::vector<Channel *> channels = this->_server.get_channels_with_user(sender);
+		for (std::vector<Channel *>::iterator channel = channels.begin(); channel != channels.end(); ++channel) {
+			(*channel)->dispatch_message(NULL, PART(sender->nick(), sender->username(), (*channel)->name(), ""));
+			(*channel)->remove_user(sender);
+		}
+
+		return;
+	}
+
 	for (size_t i = 0; i < this->_channels.size(); ++i) {
 		if (this->_channels[i].first[0] != '#' || this->_channels[i].first.size() > SERVER_CHANNELLEN) {
 			sender->send(ERR_NOSUCHCHANNEL(this->_channels[i].first));

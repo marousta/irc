@@ -107,6 +107,7 @@ void	Kick::execute(ft::User *sender, const std::string& msg)
 
 	for (std::vector<ft::User *>::iterator kicked_user = users.begin(); kicked_user != users.end(); ++kicked_user) {
 		channel->dispatch_message(NULL, KICK(sender->nick(), sender->username(), this->_channel, (*kicked_user)->nick(), this->_reason));
+		channel->remove_user(*kicked_user);
 	}
 }
 
